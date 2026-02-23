@@ -1,27 +1,28 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import axios from 'axios';
 import { useState } from 'react';
-import api from '../api';
+import api from '#/api';
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/identity/register')({
   validateSearch: (search: Record<string, unknown>): { returnUrl?: string } => {
     return search?.returnUrl ?? '/';
   },
-  component: Login,
+  component: Register,
 });
 
-function Login() {
+function Register() {
   const { returnUrl } = Route.useSearch();
   const [form, setForm] = useState({
+    name: null as string | null,
     phone: null as string | null,
     password: null as string | null,
   });
   const queryClient = useQueryClient();
-  const login = useMutation({
+  const register = useMutation({
     mutationFn: (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      return axios.post(api.public.identity.login, form);
+      return axios.post(`/${api.public.identity.register}`, form);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-info'] });
@@ -33,10 +34,14 @@ function Login() {
 
   return (
     <div className="py-2 px-auto">
-      <form
-        onSubmit={login.mutate}
-        className="flex flex-col mx-auto w-fit gap-2"
-      >
+      <form onSubmit={register.mutate} className="flex flex-col mx-auto w-fit gap-2">
+        <label htmlFor="name">Имя</label>
+        <input
+          type="text"
+          id="name"
+          className=""
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
         <label htmlFor="login">Телефон</label>
         <input
           type="text"
@@ -51,23 +56,20 @@ function Login() {
           className=""
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        <button
-          type="submit"
-          className="w-fit mx-auto bg-slate-500 rounded-full py-2 px-6"
-        >
-          Войти
+        <label className="max-w-64 text-center">
+          Продолжая, вы соглашаетесь с{' '}
+          <a className="link" href="/terms-and-conditions.html">
+            Условиями использования
+          </a>{' '}
+          и{' '}
+          <a className="link" href="/privacy-policy.html">
+            Политикой конфиденциальности
+          </a>
+        </label>
+        <button type="submit" className="mx-auto btn">
+          Зарегистрироваться
         </button>
-        <div className="flex flex-row w-fit mx-auto">
-          Нет аккаунта?&nbsp;
-          <Link
-            to="/register"
-            className="link"
-            search={{ returnUrl: `/login?returnUrl=${returnUrl}` }}
-          >
-            Зарегистрироваться
-          </Link>
-        </div>
-        <label>{login.isError && login.error.message}</label>
+        <label>{register.isError && register.error.message}</label>
       </form>
     </div>
   );

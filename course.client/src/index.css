@@ -35,6 +35,9 @@
   .page {
     @apply p-2 h-full box-border flex flex-col;
   }
+  .link {
+    @apply text-blue-400 hover:text-blue-600;
+  }
   .admin-table {
     @apply w-full;
     td, th {

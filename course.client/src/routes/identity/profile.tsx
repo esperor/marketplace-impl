@@ -1,13 +1,13 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
-import UserInfo from '../models/server/requests/userInfo';
-import api from '../api';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import UserInfo from '#/models/server/requests/userInfo';
+import api from '#/api';
 import axios from 'axios';
-import Cart from '../components/cart';
-import Orders from '../components/orders';
-import { authenticate } from '../utils/http';
+import Cart from '#/components/cart';
+import Orders from '#/components/orders';
+import { authenticate } from '#/utils/http';
 
-export const Route = createFileRoute('/profile')({
+export const Route = createFileRoute('/identity/profile')({
   component: Profile,
   beforeLoad: authenticate,
 });
@@ -28,6 +28,9 @@ function Profile() {
   return (
     <div className="page flex flex-col gap-4 h-full">
       <h2>Здравствуйте, {query.data?.info?.name}</h2>
+      <div>{query.data?.info?.isRegisteredSeller ? (<></>) : (<div>
+        <Link from="/identity/profile" to="/identity/become-seller" className='link'>Стать продавцом</Link>
+      </div>)}</div>
       <div className="grid grid-cols-2 gap-10 h-full">
         <Cart />
         <Orders />

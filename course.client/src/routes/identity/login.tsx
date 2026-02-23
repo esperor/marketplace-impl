@@ -1,28 +1,27 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
 import axios from 'axios';
 import { useState } from 'react';
-import api from '../api';
+import api from '#/api';
 
-export const Route = createFileRoute('/register')({
+export const Route = createFileRoute('/identity/login')({
   validateSearch: (search: Record<string, unknown>): { returnUrl?: string } => {
     return search?.returnUrl ?? '/';
   },
-  component: Register,
+  component: Login,
 });
 
-function Register() {
+function Login() {
   const { returnUrl } = Route.useSearch();
   const [form, setForm] = useState({
-    name: null as string | null,
     phone: null as string | null,
     password: null as string | null,
   });
   const queryClient = useQueryClient();
-  const register = useMutation({
+  const login = useMutation({
     mutationFn: (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      return axios.post(api.public.identity.register, form);
+      return axios.post(api.public.identity.login, form);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-info'] });
@@ -35,16 +34,9 @@ function Register() {
   return (
     <div className="py-2 px-auto">
       <form
-        onSubmit={register.mutate}
+        onSubmit={login.mutate}
         className="flex flex-col mx-auto w-fit gap-2"
       >
-        <label htmlFor="name">Имя</label>
-        <input
-          type="text"
-          id="name"
-          className=""
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
         <label htmlFor="login">Телефон</label>
         <input
           type="text"
@@ -61,11 +53,21 @@ function Register() {
         />
         <button
           type="submit"
-          className="w-fit mx-auto bg-slate-800 rounded-full"
+          className="w-fit mx-auto bg-slate-500 rounded-full py-2 px-6"
         >
-          Зарегистрироваться
+          Войти
         </button>
-        <label>{register.isError && register.error.message}</label>
+        <div className="flex flex-row w-fit mx-auto">
+          Нет аккаунта?&nbsp;
+          <Link
+            to="/identity/register"
+            className="link"
+            search={{ returnUrl: returnUrl }}
+          >
+            Зарегистрироваться
+          </Link>
+        </div>
+        <label>{login.isError && login.error.message}</label>
       </form>
     </div>
   );

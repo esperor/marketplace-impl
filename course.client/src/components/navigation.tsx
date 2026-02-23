@@ -49,7 +49,7 @@ function Navigation() {
           </Link>
         )}
         {isUserSignedIn && (
-          <Link to="/profile" className="[&.active]:font-bold">
+          <Link to="/identity/profile" className="[&.active]:font-bold">
             Профиль
           </Link>
         )}
@@ -64,14 +64,14 @@ function Navigation() {
         <div className="ml-auto flex flex-row">
           {isUserSignedIn ? (
             <>
-              <Link to="/profile">{query.data?.info?.name}</Link>
+              <Link to="/identity/profile">{query.data?.info?.name}</Link>
               <div className="h-full bg-gray-100 w-[1px] mx-2"></div>
               <button type="button" onClick={logout.mutate}>
                 Выйти
               </button>
             </>
           ) : (
-            <Link to="/login" search={{ returnUrl: window.location.href }}>
+            <Link to="/identity/login" search={{ returnUrl: window.location.href }}>
               Войти
             </Link>
           )}

@@ -153,45 +153,35 @@ namespace course.Server.Controllers
         //    return NoContent();
         //}
 
-        //// POST: api/seller
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //[AuthorizeAccessLevel(EAccessLevel.Client)]
-        //public async Task<ActionResult<SellerExtendedInfoModel>> PostSeller(SellerPostModel model)
-        //{
-        //    var user = _identityService.GetUser(HttpContext);
-        //    if (user is null) return BadRequest("User unauthenticated");
+        // POST: api/identity/become-seller
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("become-seller")]
+        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        public async Task<ActionResult<SellerExtendedInfoModel>> BecomeSeller(SellerPostModel model)
+        {
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest("User unauthenticated");
 
-        //    if (model.ContractConditionsAccepted == false)
-        //        return BadRequest("Contract conditions must be accepted to continue");
+            if (user.AccessTraits.HasFlag(EAccessTrait.Seller))
+                return BadRequest("User is already a seller");
 
-        //    var contractNumber = Guid.NewGuid().ToString();
+            if (model.ContractConditionsAccepted == false)
+                return BadRequest("Contract conditions must be accepted to continue");
 
-        //    var entry = _context.Sellers.Add(model.ToEntity(user.Id, contractNumber));
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (SellerExists(user.Id))
-        //            return Conflict();
-        //        else
-        //            throw;
-        //    }
+            var contractNumber = Guid.NewGuid().ToString();
 
-        //    return CreatedAtAction(
-        //        nameof(IdentityController.UserInfo),
-        //        nameof(IdentityController),
-        //        new { id = user.Id },
-        //        new SellerExtendedInfoModel
-        //        {
-        //            UserId = entry.Entity.UserId,
-        //            Email = entry.Entity.Email,
-        //            ContractNumber = entry.Entity.ContractNumber,
-        //        }
-        //    );
-        //}
+            var entry = _context.Sellers.Add(model.ToEntity(user.Id, contractNumber));
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict();
+            }
+
+            return CreatedAtAction(nameof(UserInfo), new UserInfoModel(user, true));
+        }
 
         //// POST: api/seller/freeze
         //[HttpPost("freeze")]

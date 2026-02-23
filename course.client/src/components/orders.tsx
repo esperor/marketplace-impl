@@ -11,7 +11,7 @@ function Orders() {
     {
       queryKey: ['user-orders'],
       queryFn: async () => {
-        const res = await axios.get(api.client.order.getAll);
+        const res = await axios.get(`/${api.client.order.getAll}`);
         return res.data;
       },
     },
@@ -19,7 +19,7 @@ function Orders() {
   );
   const cancel = useMutation({
     mutationFn: async (id: number) => {
-      await axios.put(replaceRouteParams(api.client.order.cancel, { id: id }));
+      await axios.put(replaceRouteParams(`/${api.client.order.cancel}`, { id: id }));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-orders'] });
@@ -39,7 +39,7 @@ function Orders() {
     <div className="flex flex-col gap-2">
       <h2 className="py-2">Ваши заказы:</h2>
       <div className="w-full h-fit max-h-[70vh] overflow-y-scroll gap-[0.5rem] pr-1 flex flex-row flex-wrap">
-        {query.data?.sort((a, b) => {
+        {query.data?.sort?.((a, b) => {
           if (a.status == EOrderStatus.Done || a.status == EOrderStatus.Canceled) return 1;
           if (b.status == EOrderStatus.Done || b.status == EOrderStatus.Canceled) return -1;
           return (a.date > b.date ? -1 : 1);

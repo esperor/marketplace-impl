@@ -53,6 +53,7 @@ const api = {
       logout: '/api/identity/logout',
       register: 'api/identity/register',
       updateUser: 'api/identity/update-user',
+      becomeSeller: 'api/identity/become-seller',
     },
     inventory: {
       get: 'api/public/inventory-record/{id}',
