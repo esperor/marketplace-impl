@@ -56,7 +56,7 @@ const PropertiesEditor = forwardRef<PropertiesEditorRef, PropertiesEditorProps>(
     }, [propertiesWithId, onChange]);
 
     return (
-      <table className="admin-table">
+      <table className="table">
         <thead>
           <tr>
             <th>Название</th>

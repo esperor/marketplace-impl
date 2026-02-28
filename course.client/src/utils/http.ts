@@ -2,7 +2,6 @@ import axios from 'axios';
 import UserInfo from '../models/server/requests/userInfo';
 import api from '../api';
 import { redirect } from '@tanstack/react-router';
-import EAccessLevel from '../models/accessLevel';
 
 export const replaceRouteParams = (
   endpoint: string,
@@ -39,17 +38,6 @@ export const authenticateSeller = async ({ location }: { location: unknown }) =>
   authenticateInternal(data, location);
 
   if (!data.info?.isRegisteredSeller)
-    throw redirect({
-      to: '/',
-    });
-};
-
-export const authenticateAdmin = async ({ location }: { location: unknown }) => {
-  const data = await fetchUserData();
-
-  authenticateInternal(data, location);
-
-  if (!data?.info?.accessLevel || data.info.accessLevel < EAccessLevel.Administrator)
     throw redirect({
       to: '/',
     });

@@ -22,7 +22,6 @@
     "paths": {
       // SYNC PATH ALIASES
       "#/*": ["./src/*"],
-      "#_admin/*": ["./src/components/routes/_admin/*"],
       "#business/*": ["./src/components/routes/business/*"],
     }
   },

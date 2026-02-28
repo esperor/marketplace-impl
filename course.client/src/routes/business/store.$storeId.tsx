@@ -120,7 +120,7 @@ function BusinessStore() {
           Редактировать
         </Link>
       </div>
-      <table className="admin-table">
+      <table className="table">
         <thead>
           <tr className="bg-slate-600">
             <th></th>

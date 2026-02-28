@@ -38,7 +38,7 @@ function EditProduct() {
   );
   if (productQuery.error)
     throw productQuery.error;
-  
+
   const [form, setForm] = useState<ProductAggregatedModel>(productQuery.data);
   const productSerialized = useMemo(() => JSON.stringify(productQuery.data), [productQuery.data]);
   const [succeded, setSucceded] = useState(false);
@@ -132,7 +132,7 @@ function EditProduct() {
         </div>
         <div className="flex flex-col">
           <label>Варианты</label>
-          <table className="admin-table">
+          <table className="table">
             <thead>
               <tr>
                 <th></th>
