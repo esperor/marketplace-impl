@@ -6,7 +6,7 @@ import { productAggregatedFromProductAggregatedModel } from '../models/productAg
 import ProductRecordServer from '../models/server/productRecordServer';
 import { replaceRouteParams } from './http';
 
-export const cart = async () => {
+export const cart = async (): Promise<CartProductRecord[] | null> => {
   if (localStorage && localStorage.getItem('cart') != null) {
     const cart: CartItem[] = JSON.parse(localStorage.getItem('cart')!);
     if (cart.length == 0) return null;
@@ -38,6 +38,6 @@ export const cart = async () => {
       return cartRecord;
     });
 
-    return await Promise.all(records);
+    return (await Promise.all(records)).filter(r => r !== null);
   } else return null;
 };

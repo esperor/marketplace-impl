@@ -22,7 +22,7 @@ const fetchUserData = async (): Promise<UserInfo> => {
 const authenticateInternal = (data: UserInfo, location: unknown) => {
   if (!data || !data.isSignedIn)
     throw redirect({
-      to: '/login',
+      to: '/identity/login',
       search: {
         returnUrl: (location as Location).href,
       },
