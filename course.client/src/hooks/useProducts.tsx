@@ -17,7 +17,7 @@ const parseRecordProperties = (
   let properties: { [key: string]: string };
   try {
     properties = record.propertiesJson ? JSON.parse(record.propertiesJson) : undefined;
-  } catch (e) {
+  } catch (_) {
     properties = { error: 'Failed to parse properties' };
   }
   return {

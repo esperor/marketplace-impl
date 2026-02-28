@@ -4,7 +4,7 @@ import * as queries from '../utils/queries';
 import ProductCounter from './productCounter';
 import randomStock from '../utils/randomStock';
 import { clearCart, removeFromCart } from '../utils/cart';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import Trash from './assets/trash';
 
 function Cart() {
@@ -16,15 +16,11 @@ function Cart() {
     },
     queryClient,
   );
-  const [totalPrice, setTotalPrice] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!(query.data && query.data.length > 0)) return;
-    setTotalPrice(
-      query.data
-        .map((item) => (item ? item.price * item.quantity : 0))
-        .reduce((prev, curr) => prev + curr, 0),
-    );
+  const totalPrice = useMemo(() => {
+    if (!(query.data && query.data.length > 0)) return null;
+    return query.data
+      .map((item) => (item ? item.price * item.quantity : 0))
+      .reduce((prev, curr) => prev + curr, 0);
   }, [query.data]);
 
   function handleCounterChange() {

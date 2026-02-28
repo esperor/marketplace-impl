@@ -43,7 +43,7 @@ export default function DelivererCreateModal({
         await axios.get<Deliverer>(`/${api.admin.deliverer.rest}/${data.id}`);
         setUserIdValid('already-assigned');
         setUser(data);
-      } catch (error) {
+      } catch (_) {
         setUserIdValid('valid');
         setUser(data);
       }

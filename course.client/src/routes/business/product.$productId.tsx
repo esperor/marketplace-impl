@@ -1,4 +1,4 @@
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useQueryClient, useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useSearch } from '@tanstack/react-router';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -23,18 +23,7 @@ function EditProduct() {
   const pathParams = Route.useParams();
   const productId = pathParams.productId;
   const searchParams = useSearch({ from: '/business/product/$productId' });
-  const [form, setForm] = useState<ProductAggregatedModel>({
-    id: Number(productId),
-    title: '',
-    description: '',
-    storeId: searchParams.storeId ?? -1,
-    storeName: '',
-  });
-  const [succeded, setSucceded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
-  const propertiesEditorRef = useRef<PropertiesEditorRef>(null);
-  const productQuery = useQuery<ProductAggregatedModel>(
+  const productQuery = useSuspenseQuery<ProductAggregatedModel>(
     {
       queryKey: ['product', productId],
       queryFn: async () => {
@@ -47,7 +36,15 @@ function EditProduct() {
     },
     queryClient,
   );
-  const productSerialized = useMemo(() => !!productQuery.data ? JSON.stringify(productQuery.data) : null, [productQuery.data]);
+  if (productQuery.error)
+    throw productQuery.error;
+  
+  const [form, setForm] = useState<ProductAggregatedModel>(productQuery.data);
+  const productSerialized = useMemo(() => JSON.stringify(productQuery.data), [productQuery.data]);
+  const [succeded, setSucceded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
+  const propertiesEditorRef = useRef<PropertiesEditorRef>(null);
   const putProduct = useMutation({
     mutationFn: async (product: ProductAggregatedModel) => {
       return await axios.put(`/${replaceRouteParams(api.business.product.update, { id: product.id })}`, product);
@@ -64,12 +61,6 @@ function EditProduct() {
   useEffect(() => {
     propertiesEditorRef?.current?.reset();
   }, [selectedRecordId]);
-
-  useEffect(() => {
-    if (productQuery.data) {
-      setForm(productQuery.data);
-    }
-  }, [productQuery.data]);
 
   const formFilled =
     !!form.id &&
