@@ -1,21 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using course.Server.Configs;
+using course.Server.Configs.Enums;
 using course.Server.Data;
 using course.Server.Models;
-using course.Server.Configs;
+using course.Server.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace course.Server.Controllers.Business
 {
     [Route("api/business/inventory-record")]
     [ApiController]
-    [AuthorizeAccessLevel(Configs.Enums.EAccessLevel.Client)]
+    [AuthorizeAccessTrait(EAccessTrait.Seller)]
     public class InventoryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IdentityService _identityService;
 
-        public InventoryController(ApplicationDbContext context)
+        public InventoryController(ApplicationDbContext context, IdentityService identityService)
         {
             _context = context;
+            _identityService = identityService;
+        }
+
+        // GET: api/business/inventory-record/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<InventoryRecordInfoModel>> GetInventoryRecord(int id)
+        {
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest();
+
+            var record = await _context.InventoryRecords.Where(i => i.Id == id).FirstOrDefaultAsync();
+            if (record is null) return NotFound();
+
+            return new InventoryRecordInfoModel(record);
         }
 
         // DELETE: api/inventory-record/5

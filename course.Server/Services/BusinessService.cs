@@ -7,20 +7,14 @@ namespace course.Server.Services
     {
         private readonly ApplicationDbContext _context = context;
 
-
-        public async Task<bool> UpdateProduct(int id, ProductAggregatedInfoModel model)
+        public async Task UpdateProduct(Product product, ProductAggregatedInfoModel model)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product is null) return false;
-
             product.Title = model.Title;
             product.Description = model.Description;
 
-            await UpdateInventoryRecordsWithoutCommit(id, model.Records ?? []);
+            await UpdateInventoryRecordsWithoutCommit(product.Id, model.Records ?? []);
 
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
         private async Task UpdateInventoryRecordsWithoutCommit(

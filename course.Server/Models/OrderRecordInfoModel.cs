@@ -10,5 +10,7 @@ namespace course.Server.Models
         public int InventoryRecordId { get; set; }
         public int Quantity { get; set; }
         public EOrderRecordStatus Status { get; set; }
+        public string ProductTitle { get; set; }
+        public string ProductVariation { get; set; }
     }
 }

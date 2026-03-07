@@ -47,18 +47,13 @@ namespace course.Server.Controllers.Business
         // GET: api/business/order/5
         [HttpGet("{id}")]
         [AuthorizeAccessTrait(EAccessTrait.Seller)]
-        public async Task<ActionResult<OrderAggregatedSellerInfoModel>> GetOrder(
-            int id,
-            int? storeId,
-            EOrderRecordStatus status,
-            int offset = 0,
-            int limit = 10)
+        public async Task<ActionResult<OrderAggregatedSellerInfoModel>> GetOrder(int id)
         {
             var user = await _identityService.GetUser(HttpContext);
             if (user is null) return BadRequest();
 
             var sqlResult = await _context.Database.SqlQuery<OrderRecordSellerDbModel>(
-                $"select * from FN_GetOrdersBySeller({user.Id}, {(int)status}, {storeId}, {id}, {offset}, {limit})").ToListAsync();
+                $"select * from FN_GetOrders({user.Id}, {null}, {null}, {id}, {null}, {null})").ToListAsync();
 
             return new OrderAggregatedSellerInfoModel(sqlResult);
         }

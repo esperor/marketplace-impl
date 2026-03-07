@@ -22,7 +22,7 @@ function Orders() {
     queryClient,
     LoadMoreBtn,
   } = useOrders(searchParams);
-  const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
 
   const isDataEmpty = !!data ? data.pages.flat().length == 0 : null;
 
@@ -34,13 +34,13 @@ function Orders() {
       filters={filters}
       setFilters={setFilters}
       onLimitChange={resetInfiniteQuery}
-      onInvalidate={() => queryClient.invalidateQueries({ queryKey: ['products'] })}
+      onInvalidate={() => queryClient.invalidateQueries({ queryKey: ['seller-orders'] })}
     />
     <div className="flex flex-row flex-wrap">
       <Link
         from="/business/orders"
         to="/business/order/$orderId"
-        params={{ orderId: selectedRecordId?.toString() ?? '' }}
+        params={{ orderId: selectedRecordId?.split('.')?.[0] ?? '' }}
         className="btn"
         disabled={!selectedRecordId}
       >
@@ -54,6 +54,7 @@ function Orders() {
           <th>Дата</th>
           <th>Статус</th>
           <th>Магазин</th>
+          <th>Название товара</th>
           <th>Сумма</th>
           <th>Доставщик назначен</th>
         </tr>
@@ -64,7 +65,7 @@ function Orders() {
             key={orderRecord.id}
             record={orderRecord}
             onSelect={setSelectedRecordId}
-            isSelected={orderRecord.id === selectedRecordId}
+            isSelected={orderRecord.id.toString() === selectedRecordId?.split('.')?.[1]}
           />
         )))}
       </tbody>

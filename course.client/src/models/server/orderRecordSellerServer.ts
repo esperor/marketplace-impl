@@ -1,15 +1,10 @@
-import EOrderRecordStatus from "../orderStatus";
+import OrderRecordInfoModel from "./orderRecordInfoModel";
 
-export default interface OrderRecordSellerServer {
-    id: number;
-    orderId: number;
-    inventoryRecordId: number;
-    date: string;
-    status: EOrderRecordStatus;
-    quantity: number;
-    price: number;
-    storeId: number;
-    storeName: string;
-    delivererContactInfo: string;
-    delivererName: string;
+export default interface OrderRecordSellerServer extends OrderRecordInfoModel {
+  date: string;
+  price: number;
+  storeId: number;
+  storeName: string;
+  delivererContactInfo: string;
+  delivererName: string;
 }

@@ -7,6 +7,8 @@ namespace course.Server.Models
         public int Id { get; set; }
         public int OrderId { get; set; }
         public int InventoryRecordId { get; set; }
+        public string ProductTitle { get; set; }
+        public string ProductVariation { get; set; }
         public DateTime Date { get; set; }
         public EOrderRecordStatus Status { get; set; }
         public int Quantity { get; set; }

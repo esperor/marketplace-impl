@@ -7,11 +7,11 @@ export default function Row({
   isSelected,
 }: {
   record: OrderRecordSellerServer;
-  onSelect?: (id: number) => void;
+  onSelect?: (id: string) => void;
   isSelected: boolean;
 }) {
   return (
-    <tr onClick={() => onSelect?.(record.id)} className={isSelected ? '!bg-yellow-900' : ''}>
+    <tr onClick={() => onSelect?.(`${record.orderId}.${record.id}`)} className={isSelected ? '!bg-yellow-900' : ''}>
       <td>
         <div
           className={`rounded-full ${isSelected ? 'bg-white' : 'bg-transparent'} aspect-square self-center w-2`}
@@ -20,6 +20,7 @@ export default function Row({
       <td>{new Date(record.date).toLocaleDateString('ru')}</td>
       <td>{orderRecordStatusMap[record.status]}</td>
       <td>{record.storeName}</td>
+      <td>{record.productTitle} ({record.productVariation})</td>
       <td>{record.price * record.quantity}</td>
       <td>{record.delivererName !== null ? 'Да' : 'Нет'}</td>
     </tr>

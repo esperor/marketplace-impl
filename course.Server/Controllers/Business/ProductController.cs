@@ -33,10 +33,18 @@ namespace course.Server.Controllers.Business
         {
             if (id != model.Id) return BadRequest();
 
-            if (await _businessService.UpdateProduct(id, model))
-                return NoContent();
-            else
-                return NotFound();
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest();
+
+            var product = await _context.Products
+                .Where(product => product.Id == id)
+                .Include(product => product.Store)
+                .FirstOrDefaultAsync();
+            if (product is null || product.Store.OwnerId != user.Id) return NotFound();
+
+            await _businessService.UpdateProduct(product, model);
+                
+            return NoContent();
         }
 
         

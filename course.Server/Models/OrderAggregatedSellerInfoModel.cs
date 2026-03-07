@@ -27,7 +27,9 @@
                     OrderId = model.OrderId,
                     InventoryRecordId = model.InventoryRecordId,
                     Quantity = model.Quantity,
-                    Status = model.Status
+                    Status = model.Status,
+                    ProductTitle = model.ProductTitle,
+                    ProductVariation = model.ProductVariation
                 };
             }).ToList();
 

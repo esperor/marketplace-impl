@@ -31,7 +31,7 @@ namespace course.Server.Models
             Quantity = inventoryRecord.Quantity;
             Price = inventoryRecord.Price;
             Image = inventoryRecord.Image;
-            Title = inventoryRecord.Product.Title;
+            Title = inventoryRecord.Product?.Title;
         }
     }
 }

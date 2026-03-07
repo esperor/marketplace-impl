@@ -9,6 +9,7 @@ const api = {
   },
   business: {
     inventory: {
+      get: 'api/business/inventory-record/{id}',
       delete: 'api/business/inventory-record/{id}',
       create: 'api/business/inventory-record/product/{productId}',
     },
