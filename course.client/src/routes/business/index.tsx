@@ -27,6 +27,7 @@ function Business() {
 
   return (
     <>
+      <Link from='/business' to='/business/orders'>Заказы</Link>
       <h3 className='pt-4 font-bold text-l'>Ваши магазины:</h3>
       <div className="grid grid-flow-row 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 gap-6 mt-6 mb-16">
         <Link

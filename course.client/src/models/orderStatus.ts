@@ -1,21 +1,17 @@
-enum EOrderStatus {
+enum EOrderRecordStatus {
   Created = 0,
-  Assigned = 1,
-  Done = 2,
-  Canceled = 3,
+  Packaged = 1,
+  Assigned = 2,
+  Done = 3,
+  Canceled = 4,
 }
 
-export function orderStatusToString(status: EOrderStatus) {
-  switch (status) {
-    case EOrderStatus.Created:
-      return "Создан";
-    case EOrderStatus.Assigned:
-      return "Назначен";
-    case EOrderStatus.Done:
-      return "Выполнен";
-    case EOrderStatus.Canceled:
-      return "Отменен";
-  }
+export const orderRecordStatusMap: Record<EOrderRecordStatus, string> = {
+  [EOrderRecordStatus.Created]: "Создан",
+  [EOrderRecordStatus.Packaged]: "Собран",
+  [EOrderRecordStatus.Assigned]: "Назначен",
+  [EOrderRecordStatus.Done]: "Выполнен",
+  [EOrderRecordStatus.Canceled]: "Отменен",
 }
 
-export default EOrderStatus;
+export default EOrderRecordStatus;

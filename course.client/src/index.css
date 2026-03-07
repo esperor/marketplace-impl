@@ -30,10 +30,13 @@
 
 @layer components {
   .btn {
-    @apply bg-slate-600 rounded-full py-2 px-6 w-fit disabled:bg-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed scale-100 active:scale-90 disabled:active:scale-100;
+    @apply bg-slate-600 rounded-full py-2 px-6 w-fit scale-100 active:scale-90;
+  }
+  .btn[aria-disabled=true], .btn:disabled {
+    @apply cursor-not-allowed bg-slate-300 text-slate-600 active:scale-100;
   }
   .page {
-    @apply p-2 h-full box-border flex flex-col;
+    @apply p-2 min-h-full box-border flex flex-col;
   }
   .link {
     @apply text-blue-400 hover:text-blue-600;

@@ -27,7 +27,7 @@ namespace course.Server.Controllers.Client
         // GET: api/client/order
         [HttpGet]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<IEnumerable<OrderInfoModel>>> GetOrders(
+        public async Task<ActionResult<IEnumerable<OrderUserInfoModel>>> GetOrders(
             int offset = 0,
             int limit = 10)
         {
@@ -44,7 +44,7 @@ namespace course.Server.Controllers.Client
                     (order, records) => new { order, records })
                 .ToListAsync();
 
-            IQueryable<OrderInfoModel> set = Enumerable.Empty<OrderInfoModel>().AsQueryable();
+            IQueryable<OrderUserInfoModel> set = Enumerable.Empty<OrderUserInfoModel>().AsQueryable();
 
             foreach (var item in orders)
             {
@@ -54,7 +54,7 @@ namespace course.Server.Controllers.Client
                     var ir = await _context.InventoryRecords.FindAsync(orderRecord.InventoryRecordId);
                     iRecords.Add(ir!, orderRecord.Quantity);
                 }
-                set = set.Append(new OrderInfoModel(item.order, iRecords));
+                set = set.Append(new OrderUserInfoModel(item.order, item.records.ToList()));
             }
             return set.Skip(offset).Take(limit).ToList();
         }
@@ -63,30 +63,24 @@ namespace course.Server.Controllers.Client
         // GET: api/client/order/5
         [HttpGet("{id}")]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<OrderInfoModel>> GetOrder(int id)
+        public async Task<ActionResult<OrderUserInfoModel>> GetOrder(int id)
         {
             var user = await _identityService.GetUser(HttpContext);
             var result = CheckUserForOrder(user, id, out var order);
             if (result != null) return result;
 
-            Dictionary<InventoryRecord, int> iRecords = [];
-            foreach (var orderRecord in 
-                await _context.OrderRecords
+            var orderRecords = await _context.OrderRecords
                 .Where(r => r.OrderId == id)
-                .ToListAsync())
-            {
-                var ir = await _context.InventoryRecords.FindAsync(orderRecord.InventoryRecordId);
-                iRecords.Add(ir!, orderRecord.Quantity);
-            }
+                .ToListAsync();
 
-            return new OrderInfoModel(order!, iRecords);
+            return new OrderUserInfoModel(order!, orderRecords);
         }
 
         // POST: api/client/order
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<OrderInfoModel>> PostOrder(OrderPostModel model)
+        public async Task<ActionResult<OrderUserInfoModel>> PostOrder(OrderPostModel model)
         {
             if (model.OrderedRecords.Count == 0) return BadRequest();
 
@@ -110,7 +104,8 @@ namespace course.Server.Controllers.Client
                         {
                             OrderId = entry.Entity.Id,
                             InventoryRecordId = id,
-                            Quantity = quantity
+                            Quantity = quantity,
+                            Status = EOrderRecordStatus.Created
                         };
                     });
 
@@ -129,7 +124,7 @@ namespace course.Server.Controllers.Client
                 throw;
             }
 
-            return CreatedAtAction("GetOrder", new { id = entry.Entity.Id }, new OrderInfoModel(entry.Entity));
+            return Ok();
         }
 
         [HttpPut]
@@ -141,8 +136,14 @@ namespace course.Server.Controllers.Client
             var result = CheckUserForOrder(user, id, out var order);
             if (result != null) return result;
 
-            order!.Status = EOrderStatus.Canceled;
-            _context.Entry(order).State = EntityState.Modified;
+            var orderRecords = await _context.OrderRecords
+                .Where(r => r.OrderId == id)
+                .ToListAsync();
+
+            foreach (var record in orderRecords)
+            {
+                record.Status = EOrderRecordStatus.Canceled;
+            }
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -24,7 +24,5 @@ namespace course.Server.Data
         public string Address { get; set; }
 
         public DateOnly Date { get; set; }
-
-        public EOrderStatus Status { get; set; } = EOrderStatus.Created;
     }
 }

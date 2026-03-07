@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import api from '../api';
 import OrderInfo from '../models/server/requests/orderInfo';
-import EOrderStatus, { orderStatusToString } from '../models/orderStatus';
+import EOrderRecordStatus, { orderRecordStatusMap } from '../models/orderStatus';
 import { replaceRouteParams } from '../utils/http';
 
 function Orders() {
@@ -40,8 +40,8 @@ function Orders() {
       <h2 className="py-2">Ваши заказы:</h2>
       <div className="w-full h-fit max-h-[70vh] overflow-y-scroll gap-[0.5rem] pr-1 flex flex-row flex-wrap">
         {query.data?.sort?.((a, b) => {
-          if (a.status == EOrderStatus.Done || a.status == EOrderStatus.Canceled) return 1;
-          if (b.status == EOrderStatus.Done || b.status == EOrderStatus.Canceled) return -1;
+          if (a.status == EOrderRecordStatus.Done || a.status == EOrderRecordStatus.Canceled) return 1;
+          if (b.status == EOrderRecordStatus.Done || b.status == EOrderRecordStatus.Canceled) return -1;
           return (a.date > b.date ? -1 : 1);
         }).map(
           (order) =>
@@ -53,15 +53,15 @@ function Orders() {
                 <h3>{`ID: ${order.id}`}</h3>
                 <p>{order.address}</p>
                 <p>{(new Date(order.date)).toLocaleDateString("ru")}</p>
-                <p>{`Статус: ${orderStatusToString(order.status)}`}</p>
+                <p>{`Статус: ${orderRecordStatusMap[order.status]}`}</p>
                 <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
                 <button
                   type="button"
                   onClick={() => handleCancel(order.id)}
                   className="ml-auto mt-auto btn"
                   disabled={
-                    order.status == EOrderStatus.Canceled ||
-                    order.status == EOrderStatus.Done
+                    order.status == EOrderRecordStatus.Canceled ||
+                    order.status == EOrderRecordStatus.Done
                   }
                 >
                   Отменить

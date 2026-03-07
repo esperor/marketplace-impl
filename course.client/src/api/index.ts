@@ -20,6 +20,10 @@ const api = {
     store: {
       getAll: 'api/business/store',
       create: 'api/business/store',
+    },
+    order: {
+      getAll: 'api/business/order',
+      get: 'api/business/order/{id}',
     }
   },
   public: {

@@ -1,4 +1,4 @@
-import EOrderStatus from "../../orderStatus";
+import EOrderRecordStatus from "../../orderStatus";
 
 export default interface OrderInfo {
   id: number;
@@ -6,6 +6,6 @@ export default interface OrderInfo {
   address: string;
   totalPrice: number;
   date: string;
-  status: EOrderStatus;
+  status: EOrderRecordStatus;
   orderedRecords: Record<number, number>;
 }

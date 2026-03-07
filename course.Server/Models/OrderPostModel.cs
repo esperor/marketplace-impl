@@ -17,7 +17,6 @@ namespace course.Server.Models
             var order = new Order
             {
                 Address = Address,
-                Status = EOrderStatus.Created,
                 Date = DateOnly.FromDateTime(DateTime.Now)
             };
             if (UserId != null) order.UserId = UserId.Value;
