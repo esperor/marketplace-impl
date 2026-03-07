@@ -38,37 +38,41 @@ function Orders() {
   return (
     <div className="flex flex-col gap-2">
       <h2 className="py-2">Ваши заказы:</h2>
-      <div className="w-full h-fit max-h-[70vh] overflow-y-scroll gap-[0.5rem] pr-1 flex flex-row flex-wrap">
-        {query.data?.sort?.((a, b) => {
-          if (a.status == EOrderRecordStatus.Done || a.status == EOrderRecordStatus.Canceled) return 1;
-          if (b.status == EOrderRecordStatus.Done || b.status == EOrderRecordStatus.Canceled) return -1;
-          return (a.date > b.date ? -1 : 1);
-        }).map(
-          (order) =>
-            order && (
-              <div
-                className="flex flex-col bg-slate-950 p-4 rounded-lg shadow-lg flex-[0_0_calc(50%-0.5rem)]"
-                key={order.id}
+      <div className="w-full h-fit max-h-[70vh] overflow-y-auto gap-[0.5rem] pr-1 flex flex-row flex-wrap">
+        {query.data?.map((order) => {
+          if (Object.values(order.orderRecords).length === 0) return null;
+
+          const orderStatus = Object.values(order.orderRecords)
+            .map((r) => r.status)
+            .reduce<EOrderRecordStatus | null>((prev, cur) => {
+              if (prev === null) return cur;
+              return prev < cur ? prev : cur;
+            }, null)!;
+
+          return (
+            <div
+              className="flex flex-col bg-slate-950 p-4 rounded-lg shadow-lg flex-[0_0_calc(50%-0.5rem)]"
+              key={order.id}
+            >
+              <h3>{`ID: ${order.id}`}</h3>
+              <p>{order.address}</p>
+              <p>{new Date(order.date).toLocaleDateString('ru')}</p>
+              <p>{`Статус: ${orderRecordStatusMap[orderStatus]}`}</p>
+              <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
+              <button
+                type="button"
+                onClick={() => handleCancel(order.id)}
+                className="ml-auto mt-auto btn"
+                disabled={
+                  orderStatus == EOrderRecordStatus.Canceled ||
+                  orderStatus == EOrderRecordStatus.Done
+                }
               >
-                <h3>{`ID: ${order.id}`}</h3>
-                <p>{order.address}</p>
-                <p>{(new Date(order.date)).toLocaleDateString("ru")}</p>
-                <p>{`Статус: ${orderRecordStatusMap[order.status]}`}</p>
-                <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
-                <button
-                  type="button"
-                  onClick={() => handleCancel(order.id)}
-                  className="ml-auto mt-auto btn"
-                  disabled={
-                    order.status == EOrderRecordStatus.Canceled ||
-                    order.status == EOrderRecordStatus.Done
-                  }
-                >
-                  Отменить
-                </button>
-              </div>
-            ),
-        )}
+                Отменить
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

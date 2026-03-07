@@ -52,7 +52,7 @@ function ProcessOrder() {
     <div className="page gap-10 flex-col">
       <div className="flex flex-col">
         <h3 className="text-2xl pb-4">
-          Заказ №{orderQuery.data.id} от {new Date(orderQuery.data.date).toLocaleDateString('ru')}
+          Заказ №{orderQuery.data.id} от {new Date(orderQuery.data.date)?.toLocaleDateString('ru')}
         </h3>
         <p>
           Назначенный доставщик:{' '}
