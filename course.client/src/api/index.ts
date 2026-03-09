@@ -25,6 +25,9 @@ const api = {
     order: {
       getAll: 'api/business/order',
       get: 'api/business/order/{id}',
+      record: {
+        updateStatus: 'api/business/order/record/{id}/status'
+      }
     }
   },
   public: {

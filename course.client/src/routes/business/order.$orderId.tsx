@@ -1,4 +1,5 @@
 import api from '#/api';
+import StatusUpdateButton from '#/components/routes/business/order.orderId/statusUpdateButton';
 import InventoryRecord from '#/models/inventoryRecord';
 import { orderRecordStatusMap } from '#/models/orderStatus';
 import OrderAggregatedSellerModel from '#/models/server/orderAggregatedSellerModel';
@@ -119,6 +120,11 @@ function ProcessOrder() {
                 <p>Цена: {inventoryQuery.data.price} руб.</p>
                 <p>Заказано: {selectedRecord.quantity} шт.</p>
               </div>
+              <StatusUpdateButton
+                selectedRecordId={selectedRecordId}
+                selectedRecordStatus={selectedRecord.status}
+                queryClient={queryClient}
+              />
             </>
           ) : (
             'Загрузка...'
