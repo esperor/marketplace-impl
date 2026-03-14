@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authenticate } from '../utils/http';
-import Cart from '../components/cart';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import api from '../api';
@@ -11,6 +10,11 @@ import { clearCart, readCart } from '../utils/cart';
 export const Route = createFileRoute('/order')({
   component: Order,
   beforeLoad: authenticate,
+  validateSearch: (search: Record<string, unknown>): { ids: number[] } => {
+    return {
+      ids: (search?.ids as number[]) || [],
+    };
+  },
 });
 
 function Order() {
@@ -70,36 +74,28 @@ function Order() {
 
   return (
     <div className="page">
-      <h1>Заказать доставку</h1>
-      <div className="flex flex-row gap-10 mt-4 flex-1">
-        <div className="w-1/2">
-          <Cart />
+      <h1 className="text-xl font-bold">Заказать доставку</h1>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <label htmlFor="address" className="mt-2">
+          Адрес
+        </label>
+        <input
+          type="text"
+          id="address"
+          className="w-2/3"
+          onChange={(e) => setForm({ ...form, address: e.target.value })}
+        ></input>
+        <div className="flex flex-row gap-4 items-center">
+          <button
+            className="btn"
+            type="submit"
+            disabled={hasOrdered || !form.address || cartQuery.data?.length === 0}
+          >
+            {hasOrdered ? 'Заказ оформлен' : 'Заказать'}
+          </button>
+          {error && <p className="text-red-600">{error}</p>}
         </div>
-
-        <form className="w-1/2 flex flex-col gap-4" onSubmit={handleSubmit}>
-          <label htmlFor="address" className="mt-2">
-            Адрес
-          </label>
-          <input
-            type="text"
-            id="address"
-            className="w-2/3"
-            onChange={(e) => setForm({ ...form, address: e.target.value })}
-          ></input>
-          <div className="flex flex-row gap-4 items-center">
-            <button
-              className="btn"
-              type="submit"
-              disabled={
-                hasOrdered || !form.address || cartQuery.data?.length === 0
-              }
-            >
-              {hasOrdered ? 'Заказ оформлен' : 'Заказать'}
-            </button>
-            {error && <p className="text-red-600">{error}</p>}
-          </div>
-        </form>
-      </div>
+      </form>
     </div>
   );
 }

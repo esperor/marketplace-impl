@@ -6,10 +6,10 @@ import { productAggregatedFromProductAggregatedModel } from '../models/productAg
 import ProductRecordServer from '../models/server/productRecordServer';
 import { replaceRouteParams } from './http';
 
-export const cart = async (): Promise<CartProductRecord[] | null> => {
+export const cart = async (): Promise<CartProductRecord[]> => {
   if (localStorage && localStorage.getItem('cart') != null) {
     const cart: CartItem[] = JSON.parse(localStorage.getItem('cart')!);
-    if (cart.length == 0) return null;
+    if (cart.length == 0) return [];
 
     const records = cart.map(async (cartItem) => {
       const response = await axios.get(
@@ -39,5 +39,5 @@ export const cart = async (): Promise<CartProductRecord[] | null> => {
     });
 
     return (await Promise.all(records)).filter(r => r !== null);
-  } else return null;
+  } else return [];
 };

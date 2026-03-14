@@ -37,7 +37,7 @@ function Navigation() {
         <Link to="/" className="[&.active]:font-bold">
           Каталог
         </Link>
-        <Link to="/order" className="[&.active]:font-bold">
+        <Link to="/cart" className="[&.active]:font-bold">
           Корзина
         </Link>
         {isUserSeller && (

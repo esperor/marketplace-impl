@@ -3,7 +3,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import UserInfo from '#/models/server/requests/userInfo';
 import api from '#/api';
 import axios from 'axios';
-import Cart from '#/components/cart';
 import Orders from '#/components/orders';
 import { authenticate } from '#/utils/http';
 
@@ -32,7 +31,6 @@ function Profile() {
         <Link from="/identity/profile" to="/identity/become-seller" className='link'>Стать продавцом</Link>
       </div>)}</div>
       <div className="grid grid-cols-2 gap-10 h-full">
-        <Cart />
         <Orders />
       </div>
     </div>
