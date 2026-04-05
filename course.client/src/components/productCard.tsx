@@ -3,7 +3,7 @@ import ProductRecord from '../models/server/productRecordServer';
 import randomStock from '../utils/randomStock';
 
 function ProductCard({ product }: { product: ProductRecord }) {
-  const productPresent: boolean = product.record && product.record.quantity > 0;
+  const productPresent: boolean = !!product.record && product.record.quantity > 0;
 
   return (
     <Link
@@ -25,7 +25,7 @@ function ProductCard({ product }: { product: ProductRecord }) {
       <div className="flex flex-col h-[25%] absolute bottom-0 left-0 w-full px-4 pt-2 pb-4 gap-2">
         <div className="flex flex-row items-center">
           <p className="pb-3 text-lg font-medium">
-            {productPresent ? `${product.record.price} руб.` : 'Нет в наличии'}
+            {productPresent ? `${product.record?.price} руб.` : 'Нет в наличии'}
           </p>
         </div>
         <h4 className="z-[1] relative flex-row flex">

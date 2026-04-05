@@ -44,14 +44,15 @@ function Order() {
   const cardExpiryMask = '__/__';
   const cardCvvMask = '___';
   const commonReplacement = { _: /\d/ };
-  const cardNumberMaskHelper = new Mask({
-    mask: cardNumberMask,
-    replacement: commonReplacement,
-  });
-  const cardCvvMaskHelper = new Mask({
-    mask: cardCvvMask,
-    replacement: commonReplacement,
-  });
+  // SYNC Placeholder: doesn't actually send any info
+  // const cardNumberMaskHelper = new Mask({
+  //   mask: cardNumberMask,
+  //   replacement: commonReplacement,
+  // });
+  // const cardCvvMaskHelper = new Mask({
+  //   mask: cardCvvMask,
+  //   replacement: commonReplacement,
+  // });
   const [cardInfo, setCardInfo] = useState({
     number: '',
     expiry: '',
