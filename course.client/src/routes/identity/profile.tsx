@@ -30,7 +30,7 @@ function Profile() {
       <div>{query.data?.info?.isRegisteredSeller ? (<></>) : (<div>
         <Link from="/identity/profile" to="/identity/become-seller" className='link'>Стать продавцом</Link>
       </div>)}</div>
-      <div className="grid grid-cols-2 gap-10 h-full">
+      <div className="h-full">
         <Orders />
       </div>
     </div>

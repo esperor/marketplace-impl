@@ -66,11 +66,12 @@ namespace course.Server.Controllers.Client
         public async Task<ActionResult<OrderUserInfoModel>> GetOrder(int id)
         {
             var user = await _identityService.GetUser(HttpContext);
-            var result = CheckUserForOrder(user, id, out var order);
+            var result = TryGetUserOrderById(user, id, out var order);
             if (result != null) return result;
 
             var orderRecords = await _context.OrderRecords
                 .Where(r => r.OrderId == id)
+                .Include(r => r.Record)
                 .ToListAsync();
 
             return new OrderUserInfoModel(order!, orderRecords);
@@ -133,7 +134,7 @@ namespace course.Server.Controllers.Client
         public async Task<ActionResult> CancelOrder([FromRoute] int id)
         {
             var user = await _identityService.GetUser(HttpContext);
-            var result = CheckUserForOrder(user, id, out var order);
+            var result = TryGetUserOrderById(user, id, out var order);
             if (result != null) return result;
 
             var orderRecords = await _context.OrderRecords
@@ -149,7 +150,7 @@ namespace course.Server.Controllers.Client
             return NoContent();
         }
 
-        private ActionResult? CheckUserForOrder(
+        private ActionResult? TryGetUserOrderById(
             ApplicationUserExtended? user,
             int orderId,
             out Order? order)
@@ -159,8 +160,7 @@ namespace course.Server.Controllers.Client
             if (user is null) return BadRequest();
             if (order is null) return NotFound();
 
-            if (user.GetAccessLevel() < EAccessLevel.Administrator &&
-                user.Id != order.UserId) return Forbid();
+            if (user.Id != order.UserId) return Forbid();
 
             return null;
         }

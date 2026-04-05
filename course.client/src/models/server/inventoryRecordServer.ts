@@ -4,7 +4,7 @@ export interface InventoryRecordBase {
   size?: string;
   variation: string;
   price: number;
-  image?: Uint8Array;
+  image?: string;
 }
 export default interface InventoryRecordServer extends InventoryRecordBase {
   propertiesJson?: string;

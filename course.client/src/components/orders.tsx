@@ -1,13 +1,22 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import axios from 'axios';
 import api from '../api';
 import OrderInfo from '../models/server/requests/orderInfo';
 import EOrderRecordStatus, { orderRecordStatusMap } from '../models/orderStatus';
 import { replaceRouteParams } from '../utils/http';
+import InventoryRecordServer from '#/models/server/inventoryRecordServer';
+import { useMemo } from 'react';
+import OrderRecordInfoModel from '#/models/server/orderRecordInfoModel';
 
 function Orders() {
   const queryClient = useQueryClient();
-  const query = useQuery<OrderInfo[]>(
+  const ordersQuery = useSuspenseQuery<OrderInfo[]>(
     {
       queryKey: ['user-orders'],
       queryFn: async () => {
@@ -17,6 +26,51 @@ function Orders() {
     },
     queryClient,
   );
+  const inventoryRecordsQuery = useQueries({
+    queries: (() => {
+      const queries = new Set<{
+        queryKey: (string | number)[];
+        queryFn: () => Promise<InventoryRecordServer>;
+      }>();
+      const processedInventoryRecordsIds = new Set<number>();
+
+      ordersQuery.data.forEach((order) =>
+        Object.entries(order.orderRecords).forEach(([id, orderRecord]) => {
+          if ([...processedInventoryRecordsIds].includes(orderRecord.inventoryRecordId)) return;
+
+          const query = {
+            queryKey: ['inventory-record', orderRecord.inventoryRecordId],
+            queryFn: async (): Promise<InventoryRecordServer> => {
+              const res = await axios.get(
+                replaceRouteParams(`/${api.public.inventory.get}`, {
+                  id: orderRecord.inventoryRecordId,
+                }),
+              );
+              return res.data;
+            },
+          };
+          queries.add(query);
+          processedInventoryRecordsIds.add(orderRecord.inventoryRecordId);
+        }),
+      );
+
+      return [...queries];
+    })(),
+  });
+  const imageMap = useMemo(() => {
+    if (!inventoryRecordsQuery.some((q) => !!q.data)) return null;
+
+    return inventoryRecordsQuery
+      .map((q) =>
+        !!q.data
+          ? {
+              inventoryRecordId: q.data.id,
+              image: q.data.image,
+            }
+          : null,
+      )
+      .filter((item) => item !== null);
+  }, [inventoryRecordsQuery]);
   const cancel = useMutation({
     mutationFn: async (id: number) => {
       await axios.put(replaceRouteParams(`/${api.client.order.cancel}`, { id: id }));
@@ -30,16 +84,61 @@ function Orders() {
     await cancel.mutateAsync(id);
   };
 
-  if (query.isPending) return <p>Загрузка...</p>;
-  if (query.isError) return <p>Произошла ошибка: {query.error.message}</p>;
+  if (ordersQuery.isError) return <p>Произошла ошибка: {ordersQuery.error.message}</p>;
 
-  if (!query.data || query.data.length == 0) return <p>Заказов нет</p>;
+  if (ordersQuery.data.length == 0) return <p>Заказов нет</p>;
+
+  const getOrderImages = (orderRecords: Record<number, OrderRecordInfoModel>) => {
+    if (imageMap === null) return [];
+    const imageSet = new Set<(typeof imageMap)[number]>();
+
+    Object.entries(orderRecords).forEach(([_, orderRecord]) => {
+      const imageMapEntry = imageMap.find(
+        (item) => item.inventoryRecordId === orderRecord.inventoryRecordId,
+      );
+      if (!!imageMapEntry && !!imageMapEntry.image) {
+        imageSet.add(imageMapEntry);
+      }
+    });
+
+    return [...imageSet];
+  };
+
+  const getOrderImagesStyles = (
+    index: number,
+    imagesAmount: number,
+  ): { className: string; style: React.CSSProperties } => {
+    const imageSideRem = 10; // sync with className (10 rem = h-40)
+    const imageMargin = imageSideRem / imagesAmount;
+    const className = `aspect-square object-cover rounded-md max-h-40 ${
+      index > 0 ? 'absolute top-0' : ''
+    }`;
+    const style: React.CSSProperties = {
+      left: `calc(${imageMargin}rem * ${index})`,
+      ...(index === 0 ? { marginRight: `calc(${imageMargin}rem * ${imagesAmount - 1})` } : {}),
+      ...(index !== 0 ? { boxShadow: `-2px 0px 7px rgb(0, 0, 0, 0.6)` } : {}),
+      scale: `calc(${imagesAmount - index} * 5 / 100%)`,
+    };
+    return { className, style };
+  };
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="py-2">Ваши заказы:</h2>
-      <div className="w-full h-fit max-h-[70vh] overflow-y-auto gap-[0.5rem] pr-1 flex flex-row flex-wrap">
-        {query.data?.map((order) => {
+      <div className="flex flex-row justify-between">
+        <h2 className="py-2">Ваши заказы:</h2>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            console.log('inv');
+            queryClient.invalidateQueries({ queryKey: ['user-orders'] });
+          }}
+        >
+          Обновить
+        </button>
+      </div>
+      <div className="w-full h-fit max-h-[70vh] overflow-y-auto gap-[0.5rem] pr-1 flex flex-col">
+        {ordersQuery.data?.map((order) => {
           if (Object.values(order.orderRecords).length === 0) return null;
 
           const orderStatus = Object.values(order.orderRecords)
@@ -51,14 +150,34 @@ function Orders() {
 
           return (
             <div
-              className="flex flex-col bg-slate-950 p-4 rounded-lg shadow-lg flex-[0_0_calc(50%-0.5rem)]"
               key={order.id}
+              className="flex flex-col gap-6 bg-slate-950 p-4 rounded-lg shadow-lg flex-[0_0_calc(50%-0.5rem)]"
             >
-              <h3>{`ID: ${order.id}`}</h3>
-              <p>{order.address}</p>
-              <p>{new Date(order.date).toLocaleDateString('ru')}</p>
-              <p>{`Статус: ${orderRecordStatusMap[orderStatus]}`}</p>
-              <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
+              <div className="flex flex-row gap-6 ">
+                <div className="flex flex-col flex-1" key={order.id}>
+                  <h3>{`ID: ${order.id}`}</h3>
+                  <p>{order.address}</p>
+                  <p>{new Date(order.date).toLocaleDateString('ru')}</p>
+                  <p>{`Статус: ${orderRecordStatusMap[orderStatus]}`}</p>
+                  <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
+                </div>
+                <div className="relative">
+                  {getOrderImages(order.orderRecords).map(
+                    ({ inventoryRecordId, image: imageData }, i, arr) => {
+                      const { className, style } = getOrderImagesStyles(i, arr.length);
+
+                      return (
+                        <img
+                          key={inventoryRecordId}
+                          className={className}
+                          style={style}
+                          src={`data:image/*;base64,${imageData}`}
+                        />
+                      );
+                    },
+                  )}
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => handleCancel(order.id)}
