@@ -103,7 +103,7 @@ function EditProduct() {
   }
 
   return (
-    <div className="flex flex-row gap-6 p-4 h-full">
+    <div className="page flex-row gap-6">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="title">Название</label>

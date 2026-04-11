@@ -15,28 +15,6 @@ const TanStackRouterDevtools =
         })),
       );
 
-const innerMainId = 'inner-main';
-
-const expandInnerMain = () => {
-  if (document.readyState !== 'complete') return;
-  const main = node(`#${innerMainId}`) as HTMLElement;
-  const nav = node('nav') as HTMLElement;
-  if (!main || !nav) return;
-  if (main.clientHeight < window.innerHeight) {
-    main.style.height = String(window.innerHeight - nav.clientHeight) + 'px';
-  }
-  else {
-    main.style.height = 'auto';
-  }
-};
-
-const expandMain = () => {
-  const main = node('main') as HTMLElement;
-  const nav = node('nav') as HTMLElement;
-  if (!main || !nav) return;
-  main.style.height = String(window.innerHeight - nav.clientHeight) + 'px';
-};
-
 const shrinkNav = () => {
   if (document.readyState !== 'complete') return;
   const nav = node('nav') as HTMLElement;
@@ -48,7 +26,6 @@ const shrinkNav = () => {
 }
 
 const onLoadMain = () => {
-  expandMain();
   shrinkNav();
 }
 
@@ -57,11 +34,9 @@ export const Route = createRootRoute({
     return (
       <>
         <Navigation />
-        <main className="w-screen overflow-auto" onLoad={onLoadMain}>
+        <main className="w-screen overflow-auto flex-1 flex flex-col" onLoad={onLoadMain}>
           <div
-            id={innerMainId}
-            className="w-[80%] mx-auto"
-            onLoad={expandInnerMain}
+            className="w-[80%] mx-auto flex-1 flex"
           >
             <Outlet />
           </div>

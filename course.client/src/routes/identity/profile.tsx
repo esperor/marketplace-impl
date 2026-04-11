@@ -25,12 +25,12 @@ function Profile() {
   );
 
   return (
-    <div className="page flex flex-col gap-4 h-full">
+    <div className="page gap-4">
       <h2>Здравствуйте, {query.data?.info?.name}</h2>
-      <div>{query.data?.info?.isRegisteredSeller ? (<></>) : (<div>
+      {query.data?.info?.isRegisteredSeller ? (<></>) : (<div>
         <Link from="/identity/profile" to="/identity/become-seller" className='link'>Стать продавцом</Link>
-      </div>)}</div>
-      <div className="h-full">
+      </div>)}
+      <div className="flex-1">
         <Orders />
       </div>
     </div>

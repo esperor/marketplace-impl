@@ -26,7 +26,9 @@ namespace course.Server.Models
                     OrderId = record.OrderId,
                     InventoryRecordId = record.InventoryRecordId,
                     Quantity = record.Quantity,
-                    Status = record.Status
+                    Status = record.Status,
+                    ProductTitle = record.Record?.Product?.Title ?? "",
+                    ProductVariation = record.Record?.Variation ?? ""
                 };
             }).ToList();
 

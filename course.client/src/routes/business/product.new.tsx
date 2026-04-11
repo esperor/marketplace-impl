@@ -46,7 +46,7 @@ function NewProduct() {
   };
 
   return (
-    <div className="flex flex-col p-4 h-full gap-4">
+    <div className="page gap-4">
       <div className="flex flex-col">
         <label htmlFor="title">Название</label>
         <input

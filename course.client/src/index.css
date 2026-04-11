@@ -8,7 +8,7 @@
     scrollbar-color: #626873 transparent;
   }
   html, body, #root {
-    @apply min-h-screen overflow-clip;
+    @apply min-h-screen overflow-x-clip flex flex-col;
   }
   hr {
     @apply border-slate-500;
@@ -35,8 +35,21 @@
   .btn[aria-disabled=true], .btn:disabled {
     @apply cursor-not-allowed bg-slate-300 text-slate-600 active:scale-100;
   }
+  .btn--highlight {
+    @apply bg-blue-700 text-gray-100 transition-colors;
+  }
+  .btn--highlight:hover:not([aria-disabled=true]):not(:disabled) {
+    @apply bg-transparent;
+  }
+  .btn--highlight::after {
+    content: '';
+    @apply transition-opacity opacity-0 absolute inset-0 rounded-full border-[3px] border-blue-700;
+  }
+  .btn--highlight:hover:not([aria-disabled=true]):not(:disabled)::after {
+    @apply opacity-100 transition-none;
+  }
   .page {
-    @apply p-2 min-h-full box-border flex flex-col;
+    @apply p-2 min-h-full min-w-full box-border flex flex-col;
   }
   .link {
     @apply text-blue-400 hover:text-blue-600;
@@ -58,6 +71,11 @@
         @apply bg-slate-700;
       } 
     }
-    
+  }
+  .order-rating-star:hover ~ .order-rating-star svg {
+    @apply fill-slate-100;
+  }
+  .order-rating-star:hover svg {
+    @apply fill-slate-100;
   }
 }
