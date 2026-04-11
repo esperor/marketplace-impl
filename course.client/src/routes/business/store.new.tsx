@@ -38,7 +38,7 @@ function NewStore() {
   };
 
   return (
-    <div className="flex flex-col p-4 h-full">
+    <div className="page p-4">
       <label htmlFor="name">Название</label>
       <input
         type="text"

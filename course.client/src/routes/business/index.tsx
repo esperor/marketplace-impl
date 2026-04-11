@@ -26,9 +26,11 @@ function Business() {
   if (!query.data) return <div>Loading...</div>;
 
   return (
-    <>
-      <Link from='/business' to='/business/orders'>Заказы</Link>
-      <h3 className='pt-4 font-bold text-l'>Ваши магазины:</h3>
+    <div className="page">
+      <Link from="/business" to="/business/orders" className="btn">
+        Смотреть заказы
+      </Link>
+      <h3 className="pt-4 font-bold text-l">Ваши магазины:</h3>
       <div className="grid grid-flow-row 2xl:grid-cols-4 xl:grid-cols-4 md:grid-cols-3 gap-6 mt-6 mb-16">
         <Link
           from={'/business'}
@@ -54,6 +56,6 @@ function Business() {
             </Link>
           ))}
       </div>
-    </>
+    </div>
   );
 }

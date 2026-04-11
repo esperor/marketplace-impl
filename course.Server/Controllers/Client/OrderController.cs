@@ -71,7 +71,7 @@ namespace course.Server.Controllers.Client
 
             var orderRecords = await _context.OrderRecords
                 .Where(r => r.OrderId == id)
-                .Include(r => r.Record)
+                .Include(r => r.Record.Product)
                 .ToListAsync();
 
             return new OrderUserInfoModel(order!, orderRecords);

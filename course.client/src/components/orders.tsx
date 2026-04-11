@@ -1,10 +1,4 @@
-import {
-  useMutation,
-  useQueries,
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query';
+import { useMutation, useQueries, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import api from '../api';
 import OrderInfo from '../models/server/requests/orderInfo';
@@ -13,6 +7,7 @@ import { replaceRouteParams } from '../utils/http';
 import InventoryRecordServer from '#/models/server/inventoryRecordServer';
 import { useMemo } from 'react';
 import OrderRecordInfoModel from '#/models/server/orderRecordInfoModel';
+import { Link } from '@tanstack/react-router';
 
 function Orders() {
   const queryClient = useQueryClient();
@@ -35,7 +30,7 @@ function Orders() {
       const processedInventoryRecordsIds = new Set<number>();
 
       ordersQuery.data.forEach((order) =>
-        Object.entries(order.orderRecords).forEach(([id, orderRecord]) => {
+        Object.entries(order.orderRecords).forEach(([_id, orderRecord]) => {
           if ([...processedInventoryRecordsIds].includes(orderRecord.inventoryRecordId)) return;
 
           const query = {
@@ -155,7 +150,7 @@ function Orders() {
             >
               <div className="flex flex-row gap-6 ">
                 <div className="flex flex-col flex-1" key={order.id}>
-                  <h3>{`ID: ${order.id}`}</h3>
+                  <h3>{`#${order.id}`}</h3>
                   <p>{order.address}</p>
                   <p>{new Date(order.date).toLocaleDateString('ru')}</p>
                   <p>{`Статус: ${orderRecordStatusMap[orderStatus]}`}</p>
@@ -178,17 +173,26 @@ function Orders() {
                   )}
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => handleCancel(order.id)}
-                className="ml-auto mt-auto btn"
-                disabled={
-                  orderStatus == EOrderRecordStatus.Canceled ||
-                  orderStatus == EOrderRecordStatus.Done
-                }
-              >
-                Отменить
-              </button>
+              <div className="flex flex-row justify-between mt-auto">
+                <Link
+                  from={'/identity/profile'}
+                  to={`/past-order/${order.id}`}
+                  className={`mr-auto btn btn--highlight ${Object.values(order.orderRecords).some((v) => v.status === EOrderRecordStatus.Done) ? '' : 'hidden'}`}
+                >
+                  Оценить покупки
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => handleCancel(order.id)}
+                  className="ml-auto btn"
+                  disabled={
+                    orderStatus === EOrderRecordStatus.Canceled ||
+                    orderStatus === EOrderRecordStatus.Done
+                  }
+                >
+                  Отменить
+                </button>
+              </div>
             </div>
           );
         })}

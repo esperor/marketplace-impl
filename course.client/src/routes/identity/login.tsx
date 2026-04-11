@@ -32,10 +32,10 @@ function Login() {
   });
 
   return (
-    <div className="py-2 px-auto">
+    <div className="page">
       <form
         onSubmit={login.mutate}
-        className="flex flex-col mx-auto w-fit gap-2"
+        className="flex flex-col m-auto w-fit gap-2 p-10 rounded-xl bg-slate-900"
       >
         <label htmlFor="login">Телефон</label>
         <input

@@ -33,8 +33,11 @@ function Register() {
   });
 
   return (
-    <div className="py-2 px-auto">
-      <form onSubmit={register.mutate} className="flex flex-col mx-auto w-fit gap-2">
+    <div className="page">
+      <form
+        onSubmit={register.mutate}
+        className="flex flex-col m-auto aspect-square w-fit gap-2 p-10 rounded-xl bg-slate-900"
+      >
         <label htmlFor="name">Имя</label>
         <input
           type="text"
@@ -56,20 +59,22 @@ function Register() {
           className=""
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        <label className="max-w-64 text-center">
-          Продолжая, вы соглашаетесь с{' '}
-          <a className="link" href="/terms-and-conditions.html">
-            Условиями использования
-          </a>{' '}
-          и{' '}
-          <a className="link" href="/privacy-policy.html">
-            Политикой конфиденциальности
-          </a>
-        </label>
-        <button type="submit" className="mx-auto btn">
-          Зарегистрироваться
-        </button>
-        <label>{register.isError && register.error.message}</label>
+        <div className="flex flex-col gap-2 items-center">
+          <label className="max-w-64 text-center">
+            Продолжая, вы соглашаетесь с{' '}
+            <a className="link" href="/terms-and-conditions.html">
+              Условиями использования
+            </a>{' '}
+            и{' '}
+            <a className="link" href="/privacy-policy.html">
+              Политикой конфиденциальности
+            </a>
+          </label>
+          <button type="submit" className="mx-auto btn">
+            Зарегистрироваться
+          </button>
+          <label>{register.isError && register.error.message}</label>
+        </div>
       </form>
     </div>
   );

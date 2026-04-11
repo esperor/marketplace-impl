@@ -29,7 +29,7 @@ function RouteComponent() {
   const isFormFilled = !!form.email && form.contractConditionsAccepted;
 
   return (
-    <div>
+    <div className='page'>
       <form onSubmit={register.mutate} className="flex flex-col mx-auto w-fit gap-2 max-w-64">
         <label htmlFor="email">Email</label>
         <input
