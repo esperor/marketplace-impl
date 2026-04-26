@@ -13,6 +13,8 @@ namespace course.Server.Migrations
             migrationBuilder.Sql("CREATE EXTENSION pg_trgm;");
 
             migrationBuilder.Sql(@"
+DROP FUNCTION IF EXISTS FN_GetProducts;
+
 CREATE OR REPLACE FUNCTION FN_GetProducts(
     searchString varchar(100) DEFAULT NULL,
     storeId integer DEFAULT NULL,
@@ -80,6 +82,8 @@ $$;
         {
             // old FN_GetProducts version
             migrationBuilder.Sql(@"
+DROP FUNCTION IF EXISTS FN_GetProducts;
+
 CREATE OR REPLACE FUNCTION FN_GetProducts(
     searchString varchar(100) DEFAULT NULL,
     storeId integer DEFAULT NULL,

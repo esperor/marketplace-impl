@@ -9,5 +9,6 @@
         public string? PropertiesJson { get; set; }
         public string? Size { get; set; }
         public string? Variation { get; set; }
+        public double? Rating { get; set; }
     }
 }
