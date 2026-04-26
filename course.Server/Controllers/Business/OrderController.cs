@@ -39,7 +39,7 @@ namespace course.Server.Controllers.Business
             if (user is null) return BadRequest();
 
             var sqlResult = await _context.Database.SqlQuery<OrderRecordSellerDbModel>(
-                $"select * from FN_GetOrders({user.Id}, {(int?)status}, {storeId}, {null}, {offset}, {limit})").ToListAsync();
+                $"select * from FN_GetOrderRecords({user.Id}, {(int?)status}, {null}, {storeId}, {null}, {offset}, {limit})").ToListAsync();
 
             return sqlResult;
         }
@@ -53,7 +53,7 @@ namespace course.Server.Controllers.Business
             if (user is null) return BadRequest();
 
             var sqlResult = await _context.Database.SqlQuery<OrderRecordSellerDbModel>(
-                $"select * from FN_GetOrders({user.Id}, {null}, {null}, {id}, {null}, {null})").ToListAsync();
+                $"select * from FN_GetOrderRecords({user.Id}, {null}, {null}, {null}, {id}, {null}, {null})").ToListAsync();
 
             return new OrderAggregatedSellerInfoModel(sqlResult);
         }
