@@ -1,6 +1,4 @@
 ﻿using course.Server.Configs.Enums;
-using course.Server.Data;
-using System.Composition.Convention;
 
 namespace course.Server.Models
 {
@@ -13,6 +11,8 @@ namespace course.Server.Models
         public EOrderRecordStatus Status { get; set; }
         public string ProductTitle { get; set; }
         public string ProductVariation { get; set; }
-        public RatingRecord? RatingRecord { get; set; }
+        public int? RatingValue { get; set; }
+        public string? RatingComment { get; set; }
+        public DateOnly? RatingDate { get; set; }
     }
 }

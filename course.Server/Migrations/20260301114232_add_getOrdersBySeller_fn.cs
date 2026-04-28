@@ -131,7 +131,7 @@ $function$
                 table: "order_record",
                 columns: new[] { "OrderId", "InventoryRecordId" });
 
-            migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS FN_GetOrdersBySeller;");
+            migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS public.FN_GetOrders;");
         }
     }
 }

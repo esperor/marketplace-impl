@@ -1,13 +1,13 @@
 ﻿namespace course.Server.Models
 {
-    public class OrderAggregatedSellerInfoModel : OrderBaseInfoModel
+    public class OrderAggregatedSellerInfoModel : OrderBaseAggregatedInfoModel
     {
         public string? DelivererName { get; set; }
         public string? DelivererContactInfo { get; set; }
 
         public OrderAggregatedSellerInfoModel() { }
 
-        public OrderAggregatedSellerInfoModel(List<OrderRecordSellerDbModel> orderRecordModels)
+        public OrderAggregatedSellerInfoModel(List<OrderRecordDbModel> orderRecordModels)
         {
             var firstRecord = orderRecordModels.FirstOrDefault()
                 ?? throw new Exception("Passed records list is empty");

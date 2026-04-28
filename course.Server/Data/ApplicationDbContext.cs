@@ -14,7 +14,6 @@ namespace course.Server.Data
         public DbSet<InventoryRecord> InventoryRecords { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderRecord> OrderRecords { get; set; }
-        public DbSet<RatingRecord> RatingRecords { get; set; }
         public DbSet<Session> Sessions { get; set; }
 
         public DbSet<SellerExtended> SellerExtendedView { get; set; }

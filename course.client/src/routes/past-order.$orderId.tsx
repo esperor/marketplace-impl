@@ -63,11 +63,13 @@ function RouteComponent() {
 
   const handleRatingClick = (orderRecordId: number, rating: number) => {
     console.log(rating);
-  }
+  };
 
   return (
     <div className="gap-4 page">
-      <h2 className='font-semibold'>Детали заказа #{order.id} от {new Date(order.date).toLocaleDateString('ru')}</h2>
+      <h2 className="font-semibold">
+        Детали заказа #{order.id} от {new Date(order.date).toLocaleDateString('ru')}
+      </h2>
       {Object.entries(order.orderRecords).map(([id, record]) => {
         const inventoryRecord = inventoryMap?.find(
           (i) => i?.inventoryRecordId === record.inventoryRecordId,
@@ -92,8 +94,14 @@ function RouteComponent() {
               {record.status === EOrderRecordStatus.Done && (
                 <div className="flex flex-row-reverse w-fit">
                   {Array.from({ length: 5 }, (_, i) => (
-                    <button key={i} onClick={() => handleRatingClick(record.id, 5 - i)} className='order-rating-star'>
-                      <Star className="size-6" />
+                    <button
+                      key={i}
+                      onClick={() => handleRatingClick(record.id, 5 - i)}
+                      className="order-rating-star"
+                    >
+                      <Star
+                        className={`size-6 ${(record.ratingValue ?? 0) >= 5 - i ? 'fill-slate-100' : ''}`}
+                      />
                     </button>
                   ))}
                 </div>

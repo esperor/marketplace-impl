@@ -47,9 +47,8 @@ LEFT JOIN stores s ON p."StoreId" = s."Id"
 		SELECT similarityName + similarityVariation + similarityDescription + similarityTitle AS similarity
 	)
     CROSS JOIN LATERAL (
-        SELECT AVG(rr."RatingValue") AS Rating
+        SELECT AVG(orec."RatingValue") AS Rating
         FROM order_record orec
-        LEFT JOIN rating_record rr ON rr."OrderRecordId" = orec."Id"
         WHERE orec."InventoryRecordId" = i."Id"
     )
 WHERE

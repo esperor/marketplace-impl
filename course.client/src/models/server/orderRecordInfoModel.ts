@@ -8,4 +8,7 @@ export default interface OrderRecordInfoModel {
   status: EOrderRecordStatus;
   productTitle: string;
   productVariation: string;
+  ratingDate: Date;
+  ratingComment: string;
+  ratingValue: number;
 }
