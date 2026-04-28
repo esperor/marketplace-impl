@@ -23,5 +23,11 @@ namespace course.Server.Data
         public required int Quantity { get; set; }
 
         public required EOrderRecordStatus Status { get; set; } = EOrderRecordStatus.Created;
+
+        public DateOnly? RatingDate { get; set; }
+
+        public string? RatingComment { get; set; }
+
+        public int? RatingValue { get; set; }
     }
 }

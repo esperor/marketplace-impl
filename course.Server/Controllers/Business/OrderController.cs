@@ -29,7 +29,7 @@ namespace course.Server.Controllers.Business
         // GET: api/business/order
         [HttpGet]
         [AuthorizeAccessTrait(EAccessTrait.Seller)]
-        public async Task<ActionResult<List<OrderRecordSellerDbModel>>> GetOrders(
+        public async Task<ActionResult<List<OrderRecordDbModel>>> GetOrders(
             int? storeId,
             EOrderRecordStatus? status,
             int offset = 0,
@@ -38,7 +38,7 @@ namespace course.Server.Controllers.Business
             var user = await _identityService.GetUser(HttpContext);
             if (user is null) return BadRequest();
 
-            var sqlResult = await _context.Database.SqlQuery<OrderRecordSellerDbModel>(
+            var sqlResult = await _context.Database.SqlQuery<OrderRecordDbModel>(
                 $"select * from FN_GetOrderRecords({user.Id}, {(int?)status}, {null}, {storeId}, {null}, {offset}, {limit})").ToListAsync();
 
             return sqlResult;
@@ -52,7 +52,7 @@ namespace course.Server.Controllers.Business
             var user = await _identityService.GetUser(HttpContext);
             if (user is null) return BadRequest();
 
-            var sqlResult = await _context.Database.SqlQuery<OrderRecordSellerDbModel>(
+            var sqlResult = await _context.Database.SqlQuery<OrderRecordDbModel>(
                 $"select * from FN_GetOrderRecords({user.Id}, {null}, {null}, {null}, {id}, {null}, {null})").ToListAsync();
 
             return new OrderAggregatedSellerInfoModel(sqlResult);

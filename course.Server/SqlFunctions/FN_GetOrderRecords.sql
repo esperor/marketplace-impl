@@ -21,7 +21,11 @@ RETURNS TABLE(
     "StoreName" text,
     "DelivererContactInfo" text,
     "DelivererName" text,
-	"Rating" numeric(3, 2)
+	"RatingValue" integer,
+	"RatingComment" text,
+	"RatingDate" date,
+	"UserId" integer,
+	"Address" text
 )
 LANGUAGE sql
 AS $$
@@ -29,8 +33,8 @@ SELECT
 	orec."Id",
     orec."OrderId",
 	orec."InventoryRecordId",
-	p."Title",
-	i."Variation",
+	p."Title" as "ProductTitle",
+	i."Variation" as "ProductVariation",
 	o."Date",
 	orec."Status",
 	orec."Quantity",
@@ -39,18 +43,17 @@ SELECT
 	s."Name" as "StoreName",
 	du."Phone" as "DelivererContactInfo",
 	du."Name" as "DelivererName",
-	Rating
+	orec."RatingValue",
+	orec."RatingComment",
+	orec."RatingDate",
+	o."UserId",
+	o."Address"
 FROM orders o
 INNER JOIN order_record orec ON o."Id" = orec."OrderId"
 INNER JOIN inventory i ON orec."InventoryRecordId" = i."Id"
 INNER JOIN products p ON p."Id" = i."ProductId"
 INNER JOIN stores s ON p."StoreId" = s."Id"
 LEFT JOIN users du ON o."DelivererId" = du."Id"
-	CROSS JOIN LATERAL (
-		SELECT rr."RatingValue" AS Rating
-		FROM rating_record rr
-		WHERE rr."OrderRecordId" = orec."Id"
-	)
 WHERE
 	(sellerid IS NULL OR s."OwnerId" = sellerid)
 	AND (storeId IS NULL OR p."StoreId" = storeId)

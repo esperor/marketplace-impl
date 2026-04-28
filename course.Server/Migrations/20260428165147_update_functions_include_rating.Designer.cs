@@ -12,7 +12,7 @@ using course.Server.Data;
 namespace course.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260426143315_update_functions_include_rating")]
+    [Migration("20260428165147_update_functions_include_rating")]
     partial class update_functions_include_rating
     {
         /// <inheritdoc />
@@ -173,6 +173,15 @@ namespace course.Server.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<string>("RatingComment")
+                        .HasColumnType("text");
+
+                    b.Property<DateOnly?>("RatingDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("RatingValue")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -209,33 +218,6 @@ namespace course.Server.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("products");
-                });
-
-            modelBuilder.Entity("course.Server.Data.RatingRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("OrderRecordId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RatingValue")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderRecordId");
-
-                    b.ToTable("rating_record");
                 });
 
             modelBuilder.Entity("course.Server.Data.Seller", b =>
@@ -420,17 +402,6 @@ namespace course.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Store");
-                });
-
-            modelBuilder.Entity("course.Server.Data.RatingRecord", b =>
-                {
-                    b.HasOne("course.Server.Data.OrderRecord", "OrderRecord")
-                        .WithMany()
-                        .HasForeignKey("OrderRecordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderRecord");
                 });
 
             modelBuilder.Entity("course.Server.Data.Seller", b =>

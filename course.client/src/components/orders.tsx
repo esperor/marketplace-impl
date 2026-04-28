@@ -2,7 +2,7 @@ import { useMutation, useQueries, useQueryClient, useSuspenseQuery } from '@tans
 import axios from 'axios';
 import api from '../api';
 import OrderInfo from '../models/server/requests/orderInfo';
-import EOrderRecordStatus, { orderRecordStatusMap } from '../models/orderStatus';
+import EOrderRecordStatus from '../models/orderStatus';
 import { replaceRouteParams } from '../utils/http';
 import InventoryRecordServer from '#/models/server/inventoryRecordServer';
 import { useMemo } from 'react';
@@ -153,7 +153,6 @@ function Orders() {
                   <h3>{`#${order.id}`}</h3>
                   <p>{order.address}</p>
                   <p>{new Date(order.date).toLocaleDateString('ru')}</p>
-                  <p>{`Статус: ${orderRecordStatusMap[orderStatus]}`}</p>
                   <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
                 </div>
                 <div className="relative">
@@ -176,7 +175,8 @@ function Orders() {
               <div className="flex flex-row justify-between mt-auto">
                 <Link
                   from={'/identity/profile'}
-                  to={`/past-order/${order.id}`}
+                  to={'/past-order/$orderId'}
+                  params={{ orderId: order.id.toString() }}
                   className={`mr-auto btn btn--highlight ${Object.values(order.orderRecords).some((v) => v.status === EOrderRecordStatus.Done) ? '' : 'hidden'}`}
                 >
                   Оценить покупки

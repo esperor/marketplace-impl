@@ -7,6 +7,7 @@ using course.Server.Configs.Enums;
 using course.Server.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using course.Server.Models.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace course.Server.Controllers.Client
 {
@@ -27,61 +28,45 @@ namespace course.Server.Controllers.Client
         // GET: api/client/order
         [HttpGet]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<IEnumerable<OrderUserInfoModel>>> GetOrders(
+        public async Task<ActionResult<IEnumerable<OrderUserAggregatedInfoModel>>> GetOrders(
             int offset = 0,
-            int limit = 10)
+            int limit = 100)
         {
             var user = await _identityService.GetUser(HttpContext);
             if (user is null) return BadRequest();
 
+            var sqlResult = await _context.Database.SqlQuery<OrderRecordDbModel>(
+               $"select * from FN_GetOrderRecords({null}, {null}, {user.Id}, {null}, {null}, {offset}, {limit})").ToListAsync();
 
-            var orders = await _context.Orders
-                .Where(o => o.UserId == user.Id)
-                .GroupJoin(
-                    _context.OrderRecords,
-                    o => o.Id,
-                    r => r.OrderId,
-                    (order, records) => new { order, records })
-                .ToListAsync();
+            List<OrderUserAggregatedInfoModel> set = [];
 
-            IQueryable<OrderUserInfoModel> set = Enumerable.Empty<OrderUserInfoModel>().AsQueryable();
-
-            foreach (var item in orders)
+            foreach (var group in sqlResult.GroupBy(dbModel => dbModel.OrderId))
             {
-                Dictionary<InventoryRecord, int> iRecords = [];
-                foreach (var orderRecord in item.records)
-                {
-                    var ir = await _context.InventoryRecords.FindAsync(orderRecord.InventoryRecordId);
-                    iRecords.Add(ir!, orderRecord.Quantity);
-                }
-                set = set.Append(new OrderUserInfoModel(item.order, item.records.ToList()));
+                set.Add(new OrderUserAggregatedInfoModel(group.ToList()));
             }
-            return set.Skip(offset).Take(limit).ToList();
+            return set;
         }
 
 
         // GET: api/client/order/5
         [HttpGet("{id}")]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<OrderUserInfoModel>> GetOrder(int id)
+        public async Task<ActionResult<OrderUserAggregatedInfoModel>> GetOrder(int id)
         {
             var user = await _identityService.GetUser(HttpContext);
-            var result = TryGetUserOrderById(user, id, out var order);
-            if (result != null) return result;
+            if (user is null) return BadRequest();
 
-            var orderRecords = await _context.OrderRecords
-                .Where(r => r.OrderId == id)
-                .Include(r => r.Record.Product)
-                .ToListAsync();
+            var sqlResult = await _context.Database.SqlQuery<OrderRecordDbModel>(
+                $"select * from FN_GetOrderRecords({null}, {null}, {user.Id}, {null}, {id}, {null}, {null})").ToListAsync();
 
-            return new OrderUserInfoModel(order!, orderRecords);
+            return new OrderUserAggregatedInfoModel(sqlResult);
         }
 
         // POST: api/client/order
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
-        public async Task<ActionResult<OrderUserInfoModel>> PostOrder(OrderPostModel model)
+        public async Task<ActionResult<OrderUserAggregatedInfoModel>> PostOrder(OrderPostModel model)
         {
             if (model.OrderedRecords.Count == 0) return BadRequest();
 
