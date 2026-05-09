@@ -20,7 +20,23 @@ namespace course.Server.Models
 
         public byte[]? Image { get; set; }
 
+        public double? Rating { get; set; }
+
         public InventoryRecordInfoModel() { }
+
+        public InventoryRecordInfoModel(ProductRecordDbModel dbModel)
+        {
+            if (dbModel.Quantity <= 0) throw new ArgumentException("Bad argument");
+
+            Id = (int)dbModel.RecordId!;
+            Price = (int)dbModel.Price!;
+            Image = dbModel.Image;
+            Quantity = (int)dbModel.Quantity!;
+            PropertiesJson = dbModel.PropertiesJson;
+            Size = dbModel.Size;
+            Variation = dbModel.Variation!;
+            Rating = dbModel.Rating;
+        }
 
         public InventoryRecordInfoModel(InventoryRecord inventoryRecord)
         {

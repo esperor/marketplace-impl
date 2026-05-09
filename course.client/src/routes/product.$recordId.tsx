@@ -6,6 +6,7 @@ import randomStock from '../utils/randomStock';
 import ProductCounter from '../components/productCounter';
 import { useEffect, useMemo, useState } from 'react';
 import { replaceRouteParams } from '../utils/http';
+import Star from '#/components/assets/star';
 
 export const Route = createFileRoute('/product/$recordId')({
   component: Product,
@@ -62,6 +63,8 @@ function Product() {
   const record = product.records?.find((record) => record.id === chosenRecordId);
   const recordProperties: Record<string, string> = JSON.parse(record?.propertiesJson ?? '{}');
 
+  const rating = record?.rating;
+
   return (
     <div className="page bg-slate-900">
       <div
@@ -82,7 +85,7 @@ function Product() {
           />
         </div>
         <div className="flex flex-col h-[25%] flex-1 basis-96 pb-4 gap-2">
-          <div className="flex flex-row flex-wrap items-center justify-between">
+          <h3 className="flex flex-row flex-wrap items-center justify-between">
             <p
               title={product.title}
               className="overflow-hidden text-2xl font-medium overflow-ellipsis text-nowrap"
@@ -90,7 +93,14 @@ function Product() {
               {product.title}
             </p>
             {product.records?.length ?? 0 > 0 ? null : <p className="text-xl">Нет в наличии</p>}
-          </div>
+            <div className="flex flex-row-reverse w-fit ml-auto">
+              {!!rating &&
+                Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} className={`size-6 ${rating >= 5 - i ? 'fill-slate-100' : ''}`} />
+                ))}
+            </div>
+            <p className='ml-2'>{rating?.toFixed(2)}</p>
+          </h3>
           <h4 className="z-[1] relative flex-row flex">
             <p
               title={product.storeName}

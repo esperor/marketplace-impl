@@ -72,10 +72,13 @@
       } 
     }
   }
-  .order-rating-star:hover ~ .order-rating-star svg {
+  .order-rating-star-reset-container:hover > .order-rating-star > svg {
+    @apply fill-none;
+  }
+  .order-rating-star:hover ~ .order-rating-star > svg {
     @apply fill-slate-100;
   }
-  .order-rating-star:hover svg {
-    @apply fill-slate-100;
+  .order-rating-star:hover > svg {
+    @apply !fill-slate-100;
   }
 }

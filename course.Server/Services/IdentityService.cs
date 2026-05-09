@@ -80,7 +80,7 @@ namespace course.Server.Services
                 .SingleOrDefaultAsync();
             if (session == null || session.CreationTime.AddDays(
                     Constants.CookieExpirationDays
-                ) < DateTime.Now)
+                ) < DateTime.UtcNow)
             {
                 return null;
             }
@@ -195,7 +195,7 @@ namespace course.Server.Services
                 string cookie = RandomNumberGenerator.GetHexString(64);
 
                 _context.Sessions.Add(new Session
-                { UserId = user.Id, Cookie = cookie, CreationTime = DateTime.Now });
+                { UserId = user.Id, Cookie = cookie, CreationTime = DateTime.UtcNow });
                 _context.SaveChanges();
                 _context.Database.CommitTransaction();
                 return cookie;

@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import ProductRecord from '../models/server/productRecordServer';
 import randomStock from '../utils/randomStock';
+import Star from './assets/star';
 
 function ProductCard({ product }: { product: ProductRecord }) {
   const productPresent: boolean = !!product.record && product.record.quantity > 0;
+  const rating = product.record?.rating;
 
   return (
     <Link
@@ -23,10 +25,17 @@ function ProductCard({ product }: { product: ProductRecord }) {
         alt={product.title}
       />
       <div className="flex flex-col h-[25%] absolute bottom-0 left-0 w-full px-4 pt-2 pb-4 gap-2">
-        <div className="flex flex-row items-center">
-          <p className="pb-3 text-lg font-medium">
+        <div className="flex flex-row items-center mb-3 gap-2">
+          <p className="text-lg font-medium flex-1">
             {productPresent ? `${product.record?.price} руб.` : 'Нет в наличии'}
           </p>
+          <div className="flex-1 flex flex-row-reverse w-fit items-end">
+            {!!rating &&
+              Array.from({ length: 5 }, (_, i) => (
+                <Star key={i} className={`size-6 ${rating >= 5 - i ? 'fill-slate-100' : ''}`} />
+              ))}
+          </div>
+          <p>{rating?.toFixed(2)}</p>
         </div>
         <h4 className="z-[1] relative flex-row flex">
           <p

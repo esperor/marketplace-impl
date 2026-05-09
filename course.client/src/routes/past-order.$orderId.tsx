@@ -5,7 +5,7 @@ import InventoryRecordServer from '#/models/server/inventoryRecordServer';
 import OrderInfo from '#/models/server/requests/orderInfo';
 import { replaceRouteParams } from '#/utils/http';
 import { useQueries } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import axios from 'axios';
 import { useMemo } from 'react';
 
@@ -61,10 +61,6 @@ function RouteComponent() {
       .filter((item) => item !== null);
   }, [inventoryRecordsQuery]);
 
-  const handleRatingClick = (orderRecordId: number, rating: number) => {
-    console.log(rating);
-  };
-
   return (
     <div className="gap-4 page">
       <h2 className="font-semibold">
@@ -93,17 +89,23 @@ function RouteComponent() {
               <p>{orderRecordStatusMap[record.status]}</p>
               {record.status === EOrderRecordStatus.Done && (
                 <div className="flex flex-row-reverse w-fit">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleRatingClick(record.id, 5 - i)}
-                      className="order-rating-star"
-                    >
+                  {Array.from({ length: 5 }, (_, i) =>
+                    record.ratingValue ? (
                       <Star
-                        className={`size-6 ${(record.ratingValue ?? 0) >= 5 - i ? 'fill-slate-100' : ''}`}
+                        key={i}
+                        className={`size-6 ${record.ratingValue >= 5 - i ? 'fill-slate-100' : ''}`}
                       />
-                    </button>
-                  ))}
+                    ) : (
+                      <Link
+                        key={i}
+                        to="/rate-past-order"
+                        search={{ orderRecord: record, rating: 5 - i, inventoryRecord }}
+                        className="order-rating-star"
+                      >
+                        <Star className="size-6" />
+                      </Link>
+                    ),
+                  )}
                 </div>
               )}
             </div>
