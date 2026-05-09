@@ -113,6 +113,30 @@ namespace course.Server.Controllers.Client
             return Ok();
         }
 
+        [HttpPut("rate-record")]
+        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        public async Task<ActionResult> RateOrderRecord(OrderRecordRatingPutModel model)
+        {
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest();
+
+            var result = await _context.OrderRecords
+                .Where(or => or.Id == model.Id)
+                .Include(or => or.Order)
+                .FirstOrDefaultAsync();
+            if (result is null) return NotFound();
+
+            if (result.Order.UserId != user.Id) return BadRequest();
+
+            result.RatingValue = model.RatingValue;
+            result.RatingComment = model.RatingComment;
+            result.RatingDate = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPut]
         [Route("{id}/cancel")]
         [AuthorizeAccessLevel(EAccessLevel.Client)]

@@ -28,49 +28,24 @@ namespace course.Server.Controllers.Public
         {
 
             var sqlResult = _context.Database.SqlQuery<ProductRecordDbModel>(
-                $"select * from FN_GetProducts({searchString}, {storeId}, {orderBy}, {offset}, {limit})");
+                $"select * from FN_GetProducts({searchString}, {storeId}, {orderBy}, {null}, {offset}, {limit})");
 
-            return await sqlResult
-                .Select(item => new ProductRecordInfoModel
-                {
-                    Id = item.Id,
-                    StoreId = item.StoreId,
-                    StoreName = item.StoreName,
-                    Title = item.Title,
-                    Description = item.Description,
-                    Record = item.Quantity == null
-                        ? null
-                        : new InventoryRecordInfoModel
-                        {
-                            Id = (int)item.RecordId!,
-                            Price = (int)item.Price!,
-                            Image = item.Image,
-                            Quantity = (int)item.Quantity!,
-                            PropertiesJson = item.PropertiesJson,
-                            Size = item.Size,
-                            Variation = item.Variation!,
-                        }
-                }).ToListAsync();
+            return await sqlResult.Select(item => new ProductRecordInfoModel(item)).ToListAsync();
         }
 
         // GET: api/public/product/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductAggregatedInfoModel>> GetProduct(int id)
         {
-            var product = await _context.Products
-                .Include(p => p.Store)
-                .Where(p => p.Id == id)
-                .SingleOrDefaultAsync();
-            if (product is null) return NotFound();
+            var sqlResult = await _context.Database.SqlQuery<ProductRecordDbModel>(
+                $"select * from FN_GetProducts({null}, {null}, {null}, {id}, {null}, {null})").ToListAsync();
 
-            var records = await _context.InventoryRecords.Where(r => r.ProductId == id).ToListAsync();
-
-            if (product == null)
+            if (sqlResult.Count == 0)
             {
                 return NotFound();
             }
 
-            return new ProductAggregatedInfoModel(product, records);
+            return new ProductAggregatedInfoModel(sqlResult);
         }
     }
 }

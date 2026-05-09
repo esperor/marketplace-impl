@@ -19,20 +19,17 @@ namespace course.Server.Models
             Description = p.Description;
         }
 
-        public ProductAggregatedInfoModel(Product p, IEnumerable<InventoryRecord>? records)
-            : this(p)
+        public ProductAggregatedInfoModel(IEnumerable<ProductRecordDbModel> dbModels)
         {
-            Records =
-                records?.Select(r => new InventoryRecordInfoModel
-                {
-                    Id = r.Id,
-                    Price = r.Price,
-                    Quantity = r.Quantity,
-                    Size = r.Size,
-                    Variation = r.Variation,
-                    PropertiesJson = r.PropertiesJson,
-                    Image = r.Image,
-                }).ToArray();
+            var firstModel = dbModels.FirstOrDefault()
+                ?? throw new ArgumentException("Argument empty");
+            
+            Id = firstModel.ProductId;
+            StoreId = firstModel.StoreId;
+            StoreName = firstModel.StoreName;
+            Title = firstModel.Title;
+            Description = firstModel.Description;
+            Records = dbModels?.Select(r => new InventoryRecordInfoModel(r)).ToArray();
         }
     }
 }

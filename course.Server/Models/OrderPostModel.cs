@@ -1,5 +1,4 @@
-﻿using course.Server.Configs.Enums;
-using course.Server.Data;
+﻿using course.Server.Data;
 
 namespace course.Server.Models
 {
@@ -17,7 +16,7 @@ namespace course.Server.Models
             var order = new Order
             {
                 Address = Address,
-                Date = DateOnly.FromDateTime(DateTime.Now)
+                Date = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             if (UserId != null) order.UserId = UserId.Value;
             return order;
