@@ -5,6 +5,7 @@ const api = {
       get: 'api/client/order/{id}',
       create: 'api/client/order',
       cancel: 'api/client/order/{id}/cancel',
+      rateRecord: 'api/client/order/rate-record',
     },
   },
   business: {
@@ -26,9 +27,9 @@ const api = {
       getAll: 'api/business/order',
       get: 'api/business/order/{id}',
       record: {
-        updateStatus: 'api/business/order/record/{id}/status'
-      }
-    }
+        updateStatus: 'api/business/order/record/{id}/status',
+      },
+    },
   },
   public: {
     identity: {
@@ -49,6 +50,9 @@ const api = {
     product: {
       getAll: 'api/public/product',
       get: 'api/public/product/{id}',
+      record: {
+        getReviews: 'api/public/product/record/{id}/reviews',
+      },
     },
   },
 };

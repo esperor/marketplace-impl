@@ -113,6 +113,7 @@ namespace course.Server.Controllers.Client
             return Ok();
         }
 
+        // PUT: api/client/order/rate-record
         [HttpPut("rate-record")]
         [AuthorizeAccessLevel(EAccessLevel.Client)]
         public async Task<ActionResult> RateOrderRecord(OrderRecordRatingPutModel model)

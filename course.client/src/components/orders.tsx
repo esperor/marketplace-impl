@@ -143,6 +143,10 @@ function Orders() {
               return prev < cur ? prev : cur;
             }, null)!;
 
+          const isRateRecordButtonShown = Object.values(order.orderRecords).some(
+            (v) => v.status === EOrderRecordStatus.Done && typeof v.ratingValue !== 'number',
+          );
+
           return (
             <div
               key={order.id}
@@ -177,7 +181,7 @@ function Orders() {
                   from={'/identity/profile'}
                   to={'/past-order/$orderId'}
                   params={{ orderId: order.id.toString() }}
-                  className={`mr-auto btn btn--highlight ${Object.values(order.orderRecords).some((v) => v.status === EOrderRecordStatus.Done) ? '' : 'hidden'}`}
+                  className={`mr-auto btn btn--highlight ${isRateRecordButtonShown ? '' : 'hidden'}`}
                 >
                   Оценить покупки
                 </Link>

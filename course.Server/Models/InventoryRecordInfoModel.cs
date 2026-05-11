@@ -26,8 +26,6 @@ namespace course.Server.Models
 
         public InventoryRecordInfoModel(ProductRecordDbModel dbModel)
         {
-            if (dbModel.Quantity <= 0) throw new ArgumentException("Bad argument");
-
             Id = (int)dbModel.RecordId!;
             Price = (int)dbModel.Price!;
             Image = dbModel.Image;

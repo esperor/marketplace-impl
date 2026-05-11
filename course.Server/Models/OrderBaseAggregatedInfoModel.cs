@@ -19,7 +19,7 @@ namespace course.Server.Models
             var totalPriceAgg = 0;
 
             OrderRecords = records.Select(record => {
-                totalPriceAgg += record.Record.Price * record.Quantity;
+                totalPriceAgg += record.InventoryRecord.Price * record.Quantity;
                 return new OrderRecordInfoModel
                 {
                     Id = record.Id,
@@ -27,8 +27,8 @@ namespace course.Server.Models
                     InventoryRecordId = record.InventoryRecordId,
                     Quantity = record.Quantity,
                     Status = record.Status,
-                    ProductTitle = record.Record?.Product?.Title ?? "",
-                    ProductVariation = record.Record?.Variation ?? "",
+                    ProductTitle = record.InventoryRecord?.Product?.Title ?? "",
+                    ProductVariation = record.InventoryRecord?.Variation ?? "",
                     RatingComment = record.RatingComment,
                     RatingDate = record.RatingDate,
                     RatingValue = record.RatingValue,

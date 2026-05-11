@@ -47,5 +47,26 @@ namespace course.Server.Controllers.Public
 
             return new ProductAggregatedInfoModel(sqlResult);
         }
+
+        // GET: api/public/product/record/5/reviews
+        [HttpGet("record/{id}/reviews")]
+        public async Task<IEnumerable<ProductReviewModel>> GetReviews(
+            int id,
+            int offset = 0,
+            int limit = 10)
+        {
+            var reviews = await _context.OrderRecords
+                .Where(orec => orec.InventoryRecordId == id && orec.RatingValue != null)
+                .Take(limit)
+                .Skip(offset)
+                .Select(orec => new ProductReviewModel {
+                    RatingValue = orec.RatingValue!.Value,
+                    RatingComment = orec.RatingComment,
+                    RatingDate = orec.RatingDate!.Value,
+                })
+                .ToListAsync();
+
+            return reviews;
+        }
     }
 }

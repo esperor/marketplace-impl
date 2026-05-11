@@ -18,7 +18,7 @@ namespace course.Server.Data
         public required int InventoryRecordId { get; set; }
 
         [ForeignKey(nameof(InventoryRecordId))]
-        public InventoryRecord Record { get; set; }
+        public InventoryRecord InventoryRecord { get; set; }
         
         public required int Quantity { get; set; }
 

@@ -1,9 +1,11 @@
+import api from '#/api';
 import Star from '#/components/assets/star';
-import InventoryRecord from '#/models/inventoryRecord';
 import OrderRecordInfoModel from '#/models/server/orderRecordInfoModel';
+import OrderRecordRatingPutModel from '#/models/server/orderRecordRatingPutModel';
 import { useMutation } from '@tanstack/react-query';
-import { createFileRoute, useSearch } from '@tanstack/react-router';
-import { useState } from 'react';
+import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router';
+import axios from 'axios';
+import { FormEventHandler, useState } from 'react';
 
 interface RatePastOrderParams {
   rating: number;
@@ -27,17 +29,37 @@ export const Route = createFileRoute('/rate-past-order')({
 });
 
 function RouteComponent() {
+  const router = useRouter();
   const searchParams = useSearch({ from: '/rate-past-order' });
   const record = searchParams.orderRecord;
   const [rating, setRating] = useState(searchParams.rating);
   const [comment, setComment] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
 
   const ratingMutation = useMutation({
-    
-  })
+    mutationFn: async (data: OrderRecordRatingPutModel) => {
+      return await axios.put(`/${api.client.order.rateRecord}`, data);
+    },
+    onSuccess() {
+      router.navigate({
+        to: '/past-order/$orderId',
+        params: { orderId: record.orderId.toString() },
+        reloadDocument: true,
+      });
+    },
+    onError(error) {
+      setMutationError('Ошибка: ' + error.message);
+    },
+  });
 
-  const handleSubmit = () => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
 
+    await ratingMutation.mutateAsync({
+      id: record.id,
+      ratingValue: rating,
+      ratingComment: comment ?? undefined,
+    });
   };
 
   return (
@@ -68,6 +90,7 @@ function RouteComponent() {
           value={comment ?? ''}
           onChange={(e) => setComment(e.target.value === '' ? null : e.target.value)}
         />
+        {mutationError && <p className="text-red-600">{mutationError}</p>}
         <button type="submit" className="btn ml-auto">
           Сохранить
         </button>
