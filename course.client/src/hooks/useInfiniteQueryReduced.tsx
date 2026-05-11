@@ -1,24 +1,27 @@
-import { InfiniteData, QueryKey, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  Enabled,
+  InfiniteData,
+  QueryKey,
+  useInfiniteQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 function useInfiniteQueryReduced<T>({
   queryFn,
   queryKey,
   limit,
+  enabled,
 }: {
   queryFn: ({ pageParam }: { pageParam: unknown }) => Promise<T[]>;
-  queryKey: QueryKey
+  queryKey: QueryKey;
   limit: number;
+  enabled?: Enabled<T[], Error, InfiniteData<T[], unknown>, readonly unknown[]>;
 }) {
   const queryClient = useQueryClient();
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery<T[]>(
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery<
+    T[]
+  >(
     {
       queryKey: queryKey,
       queryFn: queryFn,
@@ -31,18 +34,16 @@ function useInfiniteQueryReduced<T>({
         }
         return (lastPageParam as number) + 1;
       },
+      enabled: enabled,
     },
     queryClient,
   );
-  
+
   const resetInfiniteQuery = useCallback(() => {
-    queryClient.setQueryData(
-      queryKey,
-      (data: InfiniteData<T[], unknown>) => ({
-        pages: data.pages.slice(0, 1),
-        pageParams: data.pageParams.slice(0, 1),
-      }),
-    );
+    queryClient.setQueryData(queryKey, (data: InfiniteData<T[], unknown>) => ({
+      pages: data.pages.slice(0, 1),
+      pageParams: data.pageParams.slice(0, 1),
+    }));
   }, [queryClient, queryKey]);
 
   return {
@@ -54,7 +55,7 @@ function useInfiniteQueryReduced<T>({
     isFetchingNextPage,
     status,
     queryClient,
-    LoadMoreBtn:() => (
+    LoadMoreBtn: () => (
       <>
         <button
           type="button"

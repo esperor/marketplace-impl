@@ -5,15 +5,22 @@ import InventoryRecordServer from '#/models/server/inventoryRecordServer';
 import OrderInfo from '#/models/server/requests/orderInfo';
 import { replaceRouteParams } from '#/utils/http';
 import { useQueries } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useRouter, useSearch } from '@tanstack/react-router';
 import axios from 'axios';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export const Route = createFileRoute('/past-order/$orderId')({
   component: RouteComponent,
   loader: ({ params }) =>
     axios.get(replaceRouteParams(`/${api.client.order.get}`, { id: params.orderId })),
   wrapInSuspense: true,
+  validateSearch: (search: Record<string, unknown>): { rateOrderRecordId?: number } => {
+    return {
+      rateOrderRecordId: search.rateOrderRecordId
+        ? parseInt(search.rateOrderRecordId as string)
+        : undefined,
+    };
+  },
 });
 
 function RouteComponent() {
@@ -100,6 +107,13 @@ function RouteComponent() {
                         key={i}
                         to="/rate-past-order"
                         search={{ orderRecord: record, rating: 5 - i, inventoryRecord }}
+                        mask={{
+                          to: '/past-order/$orderId',
+                          params: {
+                            orderId: order.id.toString(),
+                          },
+                          search: { rateOrderRecordId: record.id },
+                        }}
                         className="order-rating-star"
                       >
                         <Star className="size-6" />

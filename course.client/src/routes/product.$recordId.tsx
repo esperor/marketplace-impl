@@ -7,6 +7,10 @@ import ProductCounter from '../components/productCounter';
 import { useEffect, useMemo, useState } from 'react';
 import { replaceRouteParams } from '../utils/http';
 import Star from '#/components/assets/star';
+import ProductReviewModel from '#/models/server/productReviewModel';
+import useInfiniteQueryReduced from '#/hooks/useInfiniteQueryReduced';
+import { hashStringToColour } from '#/utils/hashColor';
+import Profile from '#/components/assets/profile';
 
 export const Route = createFileRoute('/product/$recordId')({
   component: Product,
@@ -22,6 +26,21 @@ function Product() {
 
   const product = productRequest.data as ProductAggregatedModel;
   const isClothes = typeof product.records?.at(0)?.size === 'string';
+
+  const reviewsQuery = useInfiniteQueryReduced({
+    queryKey: ['record-reviews', chosenRecordId],
+    queryFn: async (): Promise<ProductReviewModel[]> => {
+      const response = await axios.get(
+        replaceRouteParams(`/${api.public.product.record.getReviews}`, { id: chosenRecordId! }),
+      );
+      return response.data.map((item: ProductReviewModel) => ({
+        ...item,
+        ratingDate: new Date(item.ratingDate),
+      }));
+    },
+    limit: 10,
+    enabled: !!chosenRecordId,
+  });
 
   const productPresent: boolean =
     (product.records &&
@@ -57,6 +76,7 @@ function Product() {
   useEffect(() => {
     if (!!variationRecords && variationRecords.length > 0) {
       setChosenRecordId(variationRecords[0].id);
+
     }
   }, [variationRecords]);
 
@@ -99,7 +119,7 @@ function Product() {
                   <Star key={i} className={`size-6 ${rating >= 5 - i ? 'fill-slate-100' : ''}`} />
                 ))}
             </div>
-            <p className='ml-2'>{rating?.toFixed(2)}</p>
+            <p className="ml-2">{rating?.toFixed(2)}</p>
           </h3>
           <h4 className="z-[1] relative flex-row flex">
             <p
@@ -180,6 +200,49 @@ function Product() {
           ) : null}
         </div>
       </div>
+      {reviewsQuery.data?.pages && (
+        <div id="reviews-container" className="flex flex-col gap-4 m-6">
+          <h4 className="px-8 py-2 text-xl font-semibold border border-transparent">Отзывы</h4>
+          {reviewsQuery.data.pages.at(0)?.length === 0 && <p className='px-8 text-slate-200'><i>К сожалению, здесь пока пусто</i></p>}
+          {reviewsQuery.data.pages.map((page) =>
+            page.map((review, i) => (
+              <div
+                key={i}
+                className="h-fit w-full border border-slate-400 px-8 py-4 rounded-lg flex flex-col gap-2"
+              >
+                <div className="flex flex-row gap-4">
+                  <div
+                    className="rounded-full w-12 h-12"
+                    style={{ backgroundColor: hashStringToColour(JSON.stringify(review)) }}
+                  >
+                    <Profile className="size-[3.2rem] translate-x-[-0.1rem] translate-y-[-0.1rem]" />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col">
+                      <div className="flex flex-row gap-4 items-center">
+                        <h5 className="font-semibold">Анонимный пользователь</h5>
+                        <p className="text-slate-300">
+                          {review.ratingDate.toLocaleDateString('ru')}
+                        </p>
+                      </div>
+                      <div className="flex flex-row-reverse w-fit">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <Star
+                            key={i}
+                            className={`size-6 ${review.ratingValue >= 5 - i ? 'fill-slate-100' : ''}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    {review.ratingComment && <p>{review.ratingComment}</p>}
+                  </div>
+                </div>
+              </div>
+            )),
+          )}
+          <reviewsQuery.LoadMoreBtn />
+        </div>
+      )}
     </div>
   );
 }

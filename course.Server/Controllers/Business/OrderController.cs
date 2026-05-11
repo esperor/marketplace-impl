@@ -73,11 +73,11 @@ namespace course.Server.Controllers.Business
 
             var orderRecord = await _context.OrderRecords
                 .Where(orec => orec.Id == id)
-                .Include(orec => orec.Record)
-                .Include(orec => orec.Record.Product)
-                .Include(orec => orec.Record.Product.Store)
+                .Include(orec => orec.InventoryRecord)
+                .Include(orec => orec.InventoryRecord.Product)
+                .Include(orec => orec.InventoryRecord.Product.Store)
                 .FirstOrDefaultAsync();
-            if (orderRecord is null || orderRecord.Record.Product.Store.OwnerId != user.Id) return NotFound("Целевая запись не найдена");
+            if (orderRecord is null || orderRecord.InventoryRecord.Product.Store.OwnerId != user.Id) return NotFound("Целевая запись не найдена");
 
             if (!((orderRecord.Status == EOrderRecordStatus.Created && body.NewStatus == EOrderRecordStatus.Packaged) 
                 || (orderRecord.Status == EOrderRecordStatus.Packaged && body.NewStatus == EOrderRecordStatus.Created)))
