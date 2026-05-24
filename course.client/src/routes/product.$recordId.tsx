@@ -112,7 +112,7 @@ function Product() {
             >
               {product.title}
             </p>
-            {product.records?.length ?? 0 > 0 ? null : <p className="text-xl">Нет в наличии</p>}
+            {product.records?.length ?? 0 > 0 ? null : <p className="text-xl ml-auto">Нет в наличии</p>}
             <div className="flex flex-row-reverse w-fit ml-auto">
               {!!rating &&
                 Array.from({ length: 5 }, (_, i) => (

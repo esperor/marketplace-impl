@@ -29,7 +29,10 @@ namespace course.Server.Models
             StoreName = firstModel.StoreName;
             Title = firstModel.Title;
             Description = firstModel.Description;
-            Records = dbModels?.Select(r => new InventoryRecordInfoModel(r)).ToArray();
+            Records = dbModels?
+                .Where(r => r.RecordId is not null)
+                .Select(r => new InventoryRecordInfoModel(r))
+                .ToArray();
         }
     }
 }
