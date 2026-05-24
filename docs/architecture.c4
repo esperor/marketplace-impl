@@ -1,0 +1,88 @@
+workspace "marketplace-impl" "marketplace architecture ru" {
+
+    !identifiers hierarchical
+
+    model {
+        anonymous = person "Анонимный пользователь"
+        user = person "Пользователь"
+        seller = person "Партнёр площадки (продавец)" "Продаёт товары на маркетплейсе"
+        admin = person "Администратор площадки" {
+            tags "external"
+        }
+        ss = softwareSystem "Маркетплейс" {
+            wa = container "Общедоступное веб-приложение (клиент)"
+            wa_backend = container "Общедоступное веб-приложение (сервер)" {
+                api = component "API"
+                auth = component "Модуль безопасности"
+                dbContext = component "Контекст базы данных"
+                business = component "Модуль бизнес-логики"
+            }
+            db = container "База данных" {
+                tags "Database"
+            }
+            wa_admin = container "Приложение администрирования" {
+                tags "external"
+            }
+        }
+
+        anonymous -> ss.wa "Использует"
+        user -> ss.wa "Использует"
+        seller -> ss.wa "Использует"
+        
+        ss.wa -> ss.wa_backend.api "Использует"
+        ss.wa_backend.api -> ss.wa_backend.auth "Использует для авторизации запросов"
+        ss.wa_backend.api -> ss.wa_backend.business "Использует для выполнения запросов"
+        ss.wa_backend.business -> ss.wa_backend.dbContext "Использует для взаимодействия с БД"
+        ss.wa_backend.auth -> ss.wa_backend.dbContext "Использует для взаимодействия с БД"
+        
+        ss.wa_backend.dbContext -> ss.db "Пишет и читает данные"
+        
+        admin -> ss.wa_admin "Использует"
+        ss.wa_admin -> ss.db "Пишет и читает данные"
+    }
+
+    views {
+        systemContext ss "Diagram1" {
+            include *
+        }
+
+        container ss "Diagram2" {
+            include *
+        }
+
+        component ss.wa_backend "Diagram3" {
+            include *
+        }
+
+        styles {
+            element "Element" {
+                color #55aa55
+                stroke #55aa55
+                strokeWidth 7
+                shape roundedbox
+            }
+            element "Person" {
+                shape person
+            }
+            element "Database" {
+                shape cylinder
+            }
+            element "external" {
+                color #555555
+                stroke #555555
+            }
+            element "Boundary" {
+                strokeWidth 5
+            }
+            relationship "Relationship" {
+                thickness 4
+                fontSize 30
+            }
+        }
+    }
+
+    configuration {
+        scope softwaresystem
+    }
+
+}
