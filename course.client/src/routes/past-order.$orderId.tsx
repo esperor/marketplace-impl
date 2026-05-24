@@ -5,9 +5,9 @@ import InventoryRecordServer from '#/models/server/inventoryRecordServer';
 import OrderInfo from '#/models/server/requests/orderInfo';
 import { replaceRouteParams } from '#/utils/http';
 import { useQueries } from '@tanstack/react-query';
-import { createFileRoute, Link, useRouter, useSearch } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import axios from 'axios';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 export const Route = createFileRoute('/past-order/$orderId')({
   component: RouteComponent,

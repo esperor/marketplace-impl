@@ -6,7 +6,7 @@ import api from '../api';
 import { useState } from 'react';
 import OrderPostModel from '../models/server/requests/orderPostModel';
 import { clearCart, readCart } from '../utils/cart';
-import { InputMask, Mask } from '@react-input/mask';
+import { InputMask } from '@react-input/mask';
 
 export const Route = createFileRoute('/order')({
   component: Order,
