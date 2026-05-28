@@ -39,8 +39,8 @@ namespace course.Server.Data
                     context.Users.Add(s);
                 }
 
-                var user1Id = context.Users.Where(u => u.Name == "Мария").First().Id;
-                var user2Id = context.Users.Where(u => u.Name == "Сергей").First().Id;
+                var user1Id = users.Where(u => u.Name == "Мария").First().Id;
+                var user2Id = users.Where(u => u.Name == "Сергей").First().Id;
 
                 var sellers = new Seller[]
                 {
