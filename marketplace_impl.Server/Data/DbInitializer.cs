@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     public class DbInitializer
     {

@@ -1,12 +1,12 @@
-﻿using course.Server.Configs;
-using course.Server.Configs.Enums;
-using course.Server.Data;
-using course.Server.Models;
-using course.Server.Services;
+﻿using marketplace_impl.Server.Configs;
+using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Models;
+using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace course.Server.Controllers.Business
+namespace marketplace_impl.Server.Controllers.Business
 {
     [Route("api/business/store")]
     [ApiController]

@@ -1,9 +1,9 @@
-﻿using course.Server.Configs.Enums;
+﻿using marketplace_impl.Server.Configs.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace course.Server.Configs.Authorization
+namespace marketplace_impl.Server.Configs.Authorization
 {
     public class AccessTraitPolicyProvider : IAuthorizationPolicyProvider
     {

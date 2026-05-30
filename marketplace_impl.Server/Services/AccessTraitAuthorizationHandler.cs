@@ -1,7 +1,7 @@
-﻿using course.Server.Configs;
+﻿using marketplace_impl.Server.Configs;
 using Microsoft.AspNetCore.Authorization;
 
-namespace course.Server.Services
+namespace marketplace_impl.Server.Services
 {
     public class AccessTraitAuthorizationHandler : AuthorizationHandler<AuthorizeAccessTraitAttribute>
     {

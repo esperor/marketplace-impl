@@ -1,7 +1,7 @@
-﻿using course.Server.Data;
-using course.Server.Models;
+﻿using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Models;
 
-namespace course.Server.Services
+namespace marketplace_impl.Server.Services
 {
     public class BusinessService(ApplicationDbContext context)
     {

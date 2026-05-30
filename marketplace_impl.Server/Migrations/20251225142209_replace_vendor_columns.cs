@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace course.Server.Migrations
+namespace marketplace_impl.Server.Migrations
 {
     /// <inheritdoc />
     public partial class replace_vendor_columns : Migration

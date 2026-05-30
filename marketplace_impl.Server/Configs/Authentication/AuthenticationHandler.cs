@@ -1,10 +1,10 @@
-﻿using course.Server.Services;
+﻿using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-namespace course.Server.Configs.Authentication
+namespace marketplace_impl.Server.Configs.Authentication
 {
     public class AuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {

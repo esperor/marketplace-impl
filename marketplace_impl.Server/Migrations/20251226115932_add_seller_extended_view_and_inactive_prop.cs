@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace course.Server.Migrations
+namespace marketplace_impl.Server.Migrations
 {
     /// <inheritdoc />
     public partial class add_seller_extended_view_and_inactive_prop : Migration

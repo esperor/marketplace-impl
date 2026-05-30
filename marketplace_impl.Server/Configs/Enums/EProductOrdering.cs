@@ -1,4 +1,4 @@
-﻿namespace course.Server.Configs.Enums
+﻿namespace marketplace_impl.Server.Configs.Enums
 {
     public enum EProductOrdering
     {

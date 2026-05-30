@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace course.Server.Models
+namespace marketplace_impl.Server.Models
 {
     public class ProductInfoModel
     {

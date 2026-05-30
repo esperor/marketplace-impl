@@ -1,7 +1,7 @@
-using course.Server.Configs;
-using course.Server.Configs.Authentication;
-using course.Server.Data;
-using course.Server.Services;
+using marketplace_impl.Server.Configs;
+using marketplace_impl.Server.Configs.Authentication;
+using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     public class ApplicationDbContext : DbContext
     {

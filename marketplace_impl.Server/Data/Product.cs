@@ -1,8 +1,8 @@
-﻿using course.Server.Models;
+﻿using marketplace_impl.Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     [Table("products")]
     public class Product

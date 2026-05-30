@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace course.Server.Migrations
+namespace marketplace_impl.Server.Migrations
 {
     /// <inheritdoc />
     public partial class add_orderStatus : Migration

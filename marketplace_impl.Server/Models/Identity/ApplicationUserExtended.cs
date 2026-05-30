@@ -1,8 +1,8 @@
-﻿using course.Server.Configs.Enums;
-using course.Server.Data;
+﻿using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Data;
 using System.Diagnostics.CodeAnalysis;
 
-namespace course.Server.Models.Identity
+namespace marketplace_impl.Server.Models.Identity
 {
     public class ApplicationUserExtended : ApplicationUser
     {

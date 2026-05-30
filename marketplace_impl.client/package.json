@@ -1,5 +1,5 @@
 {
-  "name": "course.client",
+  "name": "marketplace_impl.client",
   "private": true,
   "version": "1.0.0",
   "type": "module",

@@ -1,7 +1,7 @@
-﻿using course.Server.Data;
+﻿using marketplace_impl.Server.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace course.Server.Models
+namespace marketplace_impl.Server.Models
 {
     public class ProductPostModel
     {

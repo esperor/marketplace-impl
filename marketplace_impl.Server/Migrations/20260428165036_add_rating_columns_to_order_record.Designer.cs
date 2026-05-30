@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using course.Server.Data;
+using marketplace_impl.Server.Data;
 
 #nullable disable
 
-namespace course.Server.Migrations
+namespace marketplace_impl.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20260428165036_add_rating_columns_to_order_record")]
@@ -25,7 +25,7 @@ namespace course.Server.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("course.Server.Data.AccessLevel", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.AccessLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace course.Server.Migrations
                     b.ToTable("access_levels");
                 });
 
-            modelBuilder.Entity("course.Server.Data.ApplicationUser", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace course.Server.Migrations
                     b.ToTable("users");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Deliverer", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Deliverer", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -89,7 +89,7 @@ namespace course.Server.Migrations
                     b.ToTable("deliverers");
                 });
 
-            modelBuilder.Entity("course.Server.Data.InventoryRecord", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.InventoryRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,7 @@ namespace course.Server.Migrations
                     b.ToTable("inventory");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Order", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,7 +156,7 @@ namespace course.Server.Migrations
                     b.ToTable("orders");
                 });
 
-            modelBuilder.Entity("course.Server.Data.OrderRecord", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.OrderRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,7 +194,7 @@ namespace course.Server.Migrations
                     b.ToTable("order_record");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Product", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -220,7 +220,7 @@ namespace course.Server.Migrations
                     b.ToTable("products");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Seller", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Seller", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -244,7 +244,7 @@ namespace course.Server.Migrations
                     b.ToTable("sellers");
                 });
 
-            modelBuilder.Entity("course.Server.Data.SellerExtended", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.SellerExtended", b =>
                 {
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -277,7 +277,7 @@ namespace course.Server.Migrations
                     b.ToTable("seller_extended");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Session", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Session", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -302,7 +302,7 @@ namespace course.Server.Migrations
                     b.ToTable("sessions");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Store", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Store", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -324,9 +324,9 @@ namespace course.Server.Migrations
                     b.ToTable("stores");
                 });
 
-            modelBuilder.Entity("course.Server.Data.ApplicationUser", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.ApplicationUser", b =>
                 {
-                    b.HasOne("course.Server.Data.AccessLevel", "AccessLevel")
+                    b.HasOne("marketplace_impl.Server.Data.AccessLevel", "AccessLevel")
                         .WithMany()
                         .HasForeignKey("AccessLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -335,9 +335,9 @@ namespace course.Server.Migrations
                     b.Navigation("AccessLevel");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Deliverer", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Deliverer", b =>
                 {
-                    b.HasOne("course.Server.Data.ApplicationUser", "User")
+                    b.HasOne("marketplace_impl.Server.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -346,9 +346,9 @@ namespace course.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("course.Server.Data.InventoryRecord", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.InventoryRecord", b =>
                 {
-                    b.HasOne("course.Server.Data.Product", "Product")
+                    b.HasOne("marketplace_impl.Server.Data.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -357,13 +357,13 @@ namespace course.Server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Order", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Order", b =>
                 {
-                    b.HasOne("course.Server.Data.Deliverer", "Deliverer")
+                    b.HasOne("marketplace_impl.Server.Data.Deliverer", "Deliverer")
                         .WithMany()
                         .HasForeignKey("DelivererId");
 
-                    b.HasOne("course.Server.Data.ApplicationUser", "User")
+                    b.HasOne("marketplace_impl.Server.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -374,15 +374,15 @@ namespace course.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("course.Server.Data.OrderRecord", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.OrderRecord", b =>
                 {
-                    b.HasOne("course.Server.Data.InventoryRecord", "Record")
+                    b.HasOne("marketplace_impl.Server.Data.InventoryRecord", "Record")
                         .WithMany()
                         .HasForeignKey("InventoryRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("course.Server.Data.Order", "Order")
+                    b.HasOne("marketplace_impl.Server.Data.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -393,9 +393,9 @@ namespace course.Server.Migrations
                     b.Navigation("Record");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Product", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Product", b =>
                 {
-                    b.HasOne("course.Server.Data.Store", "Store")
+                    b.HasOne("marketplace_impl.Server.Data.Store", "Store")
                         .WithMany()
                         .HasForeignKey("StoreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -404,9 +404,9 @@ namespace course.Server.Migrations
                     b.Navigation("Store");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Seller", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Seller", b =>
                 {
-                    b.HasOne("course.Server.Data.ApplicationUser", "User")
+                    b.HasOne("marketplace_impl.Server.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -415,9 +415,9 @@ namespace course.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Session", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Session", b =>
                 {
-                    b.HasOne("course.Server.Data.ApplicationUser", "User")
+                    b.HasOne("marketplace_impl.Server.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -426,9 +426,9 @@ namespace course.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("course.Server.Data.Store", b =>
+            modelBuilder.Entity("marketplace_impl.Server.Data.Store", b =>
                 {
-                    b.HasOne("course.Server.Data.Seller", "Owner")
+                    b.HasOne("marketplace_impl.Server.Data.Seller", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)

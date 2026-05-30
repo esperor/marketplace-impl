@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     [Table("sessions")]
     public class Session

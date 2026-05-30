@@ -1,6 +1,6 @@
-﻿using course.Server.Data;
+﻿using marketplace_impl.Server.Data;
 
-namespace course.Server.Models
+namespace marketplace_impl.Server.Models
 {
     public class OrderBaseAggregatedInfoModel
     {

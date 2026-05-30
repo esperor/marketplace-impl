@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace course.Server.Models.Identity
+namespace marketplace_impl.Server.Models.Identity
 {
     public class UserRegisterModel : UserLoginModel
     {

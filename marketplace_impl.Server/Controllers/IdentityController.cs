@@ -1,14 +1,14 @@
-﻿using course.Server.Configs;
-using course.Server.Configs.Enums;
-using course.Server.Data;
-using course.Server.Models;
-using course.Server.Models.Identity;
-using course.Server.Services;
+﻿using marketplace_impl.Server.Configs;
+using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Models;
+using marketplace_impl.Server.Models.Identity;
+using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace course.Server.Controllers
+namespace marketplace_impl.Server.Controllers
 {
     [Route("api/identity")]
     [ApiController]

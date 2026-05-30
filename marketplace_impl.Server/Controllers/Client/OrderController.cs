@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using course.Server.Data;
-using course.Server.Services;
-using course.Server.Configs;
-using course.Server.Configs.Enums;
-using course.Server.Models;
+using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Services;
+using marketplace_impl.Server.Configs;
+using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using course.Server.Models.Identity;
+using marketplace_impl.Server.Models.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace course.Server.Controllers.Client
+namespace marketplace_impl.Server.Controllers.Client
 {
     [Route("api/client/order")]
     [ApiController]

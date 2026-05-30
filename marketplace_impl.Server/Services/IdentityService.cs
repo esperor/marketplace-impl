@@ -1,13 +1,13 @@
-﻿using course.Server.Configs;
-using course.Server.Configs.Enums;
-using course.Server.Data;
-using course.Server.Models.Identity;
+﻿using marketplace_impl.Server.Configs;
+using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using System.Security.Cryptography;
 
-namespace course.Server.Services
+namespace marketplace_impl.Server.Services
 {
     public class IdentityService(ApplicationDbContext context, IPasswordHasher<ApplicationUser> passwordHasher)
     {

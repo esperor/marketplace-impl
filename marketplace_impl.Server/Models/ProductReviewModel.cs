@@ -1,4 +1,4 @@
-﻿namespace course.Server.Models
+﻿namespace marketplace_impl.Server.Models
 {
     public class ProductReviewModel
     {

@@ -1,9 +1,9 @@
-﻿using course.Server.Data;
-using course.Server.Models;
+﻿using marketplace_impl.Server.Data;
+using marketplace_impl.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace course.Server.Controllers.Public
+namespace marketplace_impl.Server.Controllers.Public
 {
     [Route("api/public/store")]
     [ApiController]

@@ -1,8 +1,8 @@
-﻿using course.Server.Configs.Enums;
+﻿using marketplace_impl.Server.Configs.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     [Table("order_record")]
     public class OrderRecord

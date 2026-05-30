@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace course.Server.Data
+namespace marketplace_impl.Server.Data
 {
     [Table("users")]
     public class ApplicationUser
