@@ -18,7 +18,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<BusinessService>();
-builder.Services.AddTransient<IAuthorizationHandler, AccessLevelAuthorizationHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, AccessTraitAuthorizationHandler>();
 
 #region Authentication
@@ -53,7 +52,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("ShouldInitializeDb") == true)
 {
     using (var scope = app.Services.CreateScope())
     {

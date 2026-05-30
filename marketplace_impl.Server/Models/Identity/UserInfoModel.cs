@@ -8,7 +8,6 @@ namespace course.Server.Models.Identity
         public int Id { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
-        public EAccessLevel AccessLevel { get; set; }
         public bool IsRegisteredSeller { get; set; }
     }
 
@@ -26,7 +25,6 @@ namespace course.Server.Models.Identity
                 Id = user.Id,
                 Name = user.Name,
                 Phone = user.Phone,
-                AccessLevel = user.GetAccessLevel(),
                 IsRegisteredSeller = isSeller
             };
         }

@@ -1,5 +1,4 @@
-﻿using course.Server.Configs.Enums;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 
 namespace course.Server.Data
@@ -14,27 +13,18 @@ namespace course.Server.Data
 
             try
             {
-                if (context.AccessLevels.Any()) return;
-
-                await SeedAccessLevels(context);
-
-                var clientLevelId = context.AccessLevels.Where(l => l.Name == EAccessLevel.Client.ToString()).First().Id;
-                var adminLevelId = context.AccessLevels.Where(l => l.Name == EAccessLevel.Administrator.ToString()).First().Id;
-
                 var users = new ApplicationUser[]
                 {
-                    new ApplicationUser{ Name="Алексей Арсенов", AccessLevelId=clientLevelId, Phone=RandomPhone()},
-                    new ApplicationUser{ Name="Мария", AccessLevelId=clientLevelId, Phone=RandomPhone()},
-                    new ApplicationUser{ Name="Сергей", AccessLevelId=clientLevelId, Phone=RandomPhone()},
-                    new ApplicationUser{ Name="Анастасия Рябкова", AccessLevelId=clientLevelId, Phone=RandomPhone()},
-                    new ApplicationUser{ Name="Администратор", AccessLevelId=adminLevelId, Phone=RandomPhone()},
+                    new ApplicationUser{ Name="Алексей Арсенов", Phone=RandomPhone()},
+                    new ApplicationUser{ Name="Мария", Phone=RandomPhone()},
+                    new ApplicationUser{ Name="Сергей", Phone=RandomPhone()},
+                    new ApplicationUser{ Name="Анастасия Рябкова", Phone=RandomPhone()},
+                    new ApplicationUser{ Name="Администратор", Phone=RandomPhone()},
                 };
 
                 foreach (ApplicationUser s in users)
                 {
-                    if (s.AccessLevelId == clientLevelId)
-                        s.PasswordHash = passwordHasher.HashPassword(s, "1234");
-                    else s.PasswordHash = passwordHasher.HashPassword(s, "admin");
+                    s.PasswordHash = passwordHasher.HashPassword(s, "1234");
                     context.Users.Add(s);
                 }
 
@@ -95,14 +85,6 @@ namespace course.Server.Data
                 throw;
             }
             context.Database.CommitTransaction();
-        }
-
-        private static async Task SeedAccessLevels(ApplicationDbContext context)
-        {
-            foreach (EAccessLevel level in (EAccessLevel[])Enum.GetValues(typeof(EAccessLevel)))
-                await context.AccessLevels.AddAsync(new AccessLevel { Name = level.ToString() });
-
-            context.SaveChanges();
         }
 
         private static class RandomContract

@@ -13,11 +13,6 @@ namespace course.Server.Services
     {
         private readonly ApplicationDbContext _context = context;
         private readonly IPasswordHasher<ApplicationUser> _passwordHasher = passwordHasher;
-        private readonly Dictionary<EAccessLevel, int> _accessLevelsToIdMap = CreateAccessLevelsToIdMap(context);
-
-        public Dictionary<EAccessLevel, int> AccessLevelsToIdMap { 
-            get { return _accessLevelsToIdMap; }
-        }
 
         public class Result
         {
@@ -87,7 +82,6 @@ namespace course.Server.Services
 
             var user = _context.Users
                 .Where(u => u.Id == session.UserId)
-                .Include(nameof(ApplicationUser.AccessLevel))
                 .SingleOrDefault();
 
             if (user is null) return null;
@@ -98,6 +92,8 @@ namespace course.Server.Services
         private async Task<EAccessTrait> GetUserAccessTraits(ApplicationUser user)
         {
             EAccessTrait accessTraits = 0x0;
+
+            accessTraits |= EAccessTrait.Client;
 
             var isSeller = await _context.Sellers
                 .AnyAsync(s => s.UserId == user.Id && !s.Suspended && !s.Freezed);
@@ -179,17 +175,6 @@ namespace course.Server.Services
             {
                 return Errors([e.Message]);
             }
-        }
-
-        private static Dictionary<EAccessLevel, int> CreateAccessLevelsToIdMap(ApplicationDbContext context)
-        {
-            var dictionary = new Dictionary<EAccessLevel, int>();
-            context.AccessLevels.ToList().ForEach(level =>
-            {
-                var success = Enum.TryParse(level.Name, out EAccessLevel eLevel);
-                if (success) dictionary.Add(eLevel, level.Id);
-            });
-            return dictionary;
         }
 
         private string GenerateAuthCookie(ApplicationUser user)

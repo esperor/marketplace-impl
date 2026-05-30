@@ -83,8 +83,7 @@ namespace course.Server.Controllers
         {
             try
             {
-                var clientAccessLevelId = _identityService.AccessLevelsToIdMap[EAccessLevel.Client];
-                var user = new ApplicationUser { Name = model.Name, Phone = model.Phone, AccessLevelId = clientAccessLevelId };
+                var user = new ApplicationUser { Name = model.Name, Phone = model.Phone };
                 var result = _identityService.CreateUser(user, model.Password);
 
                 if (!result.Success)
@@ -122,7 +121,7 @@ namespace course.Server.Controllers
         //// PUT: api/seller
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         //[HttpPut]
-        //[AuthorizeAccessLevel(EAccessLevel.Client)]
+        //[AuthorizeAccessTrait(EAccessTrait.Client)]
         //public async Task<IActionResult> PutSeller(SellerUpdateModel model)
         //{
         //    var user = _identityService.GetUser(HttpContext);
@@ -156,7 +155,7 @@ namespace course.Server.Controllers
         // POST: api/identity/become-seller
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("become-seller")]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult<SellerExtendedInfoModel>> BecomeSeller(SellerPostModel model)
         {
             var user = await _identityService.GetUser(HttpContext);
@@ -185,7 +184,7 @@ namespace course.Server.Controllers
 
         //// POST: api/seller/freeze
         //[HttpPost("freeze")]
-        //[AuthorizeAccessLevel(EAccessLevel.Client)]
+        //[AuthorizeAccessTrait(EAccessTrait.Client)]
         //public async Task<IActionResult> FreezeSeller()
         //{
         //    var user = _identityService.GetUser(HttpContext);

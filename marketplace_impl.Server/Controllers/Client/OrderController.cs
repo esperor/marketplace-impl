@@ -27,7 +27,7 @@ namespace course.Server.Controllers.Client
 
         // GET: api/client/order
         [HttpGet]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult<IEnumerable<OrderUserAggregatedInfoModel>>> GetOrders(
             int offset = 0,
             int limit = 100)
@@ -50,7 +50,7 @@ namespace course.Server.Controllers.Client
 
         // GET: api/client/order/5
         [HttpGet("{id}")]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult<OrderUserAggregatedInfoModel>> GetOrder(int id)
         {
             var user = await _identityService.GetUser(HttpContext);
@@ -65,7 +65,7 @@ namespace course.Server.Controllers.Client
         // POST: api/client/order
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult<OrderUserAggregatedInfoModel>> PostOrder(OrderPostModel model)
         {
             if (model.OrderedRecords.Count == 0) return BadRequest();
@@ -115,7 +115,7 @@ namespace course.Server.Controllers.Client
 
         // PUT: api/client/order/rate-record
         [HttpPut("rate-record")]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult> RateOrderRecord(OrderRecordRatingPutModel model)
         {
             var user = await _identityService.GetUser(HttpContext);
@@ -140,7 +140,7 @@ namespace course.Server.Controllers.Client
 
         [HttpPut]
         [Route("{id}/cancel")]
-        [AuthorizeAccessLevel(EAccessLevel.Client)]
+        [AuthorizeAccessTrait(EAccessTrait.Client)]
         public async Task<ActionResult> CancelOrder([FromRoute] int id)
         {
             var user = await _identityService.GetUser(HttpContext);

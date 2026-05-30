@@ -1,10 +1,7 @@
-import EAccessLevel from "../../accessLevel";
-
 export interface User {
   id: number;
   name: string;
   phone: string;
-  accessLevel: EAccessLevel;
   isRegisteredSeller: boolean;
 }
 

@@ -24,8 +24,7 @@ namespace course.Server.Configs.Authorization
                 Enum.TryParse(typeof(EAccessTrait), policyName.Substring(POLICY_PREFIX.Length), 
                 out var accessTrait))
             {
-                var policy = new AuthorizationPolicyBuilder(
-                                                    JwtBearerDefaults.AuthenticationScheme);
+                var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
                 policy.AddRequirements(new AuthorizeAccessTraitAttribute((EAccessTrait)accessTrait));
                 return Task.FromResult<AuthorizationPolicy?>(policy.Build());
             }

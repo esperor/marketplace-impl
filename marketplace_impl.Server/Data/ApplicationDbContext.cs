@@ -6,7 +6,6 @@ namespace course.Server.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<AccessLevel> AccessLevels { get; set; }
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<Deliverer> Deliverers { get; set; }
         public DbSet<Store> Stores { get; set; }
