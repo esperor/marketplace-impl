@@ -1,4 +1,5 @@
-﻿using marketplace_impl.Server.Services;
+﻿using marketplace_impl.Server.Configs.Enums;
+using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -28,15 +29,16 @@ namespace marketplace_impl.Server.Configs.Authentication
             var identityService = ServiceProvider.GetRequiredService<IdentityService>();
 
             var user = await identityService.GetUser(Request.HttpContext);
-
-            var authCookie = Request.Cookies
-                .Where(c => c.Key == Constants.AuthCookieName).FirstOrDefault().Value;
-
             if (user is null) return AuthenticateResult.Fail("Authentication cookie not found");
 
-            var claims = new[] { new Claim("cookie", authCookie) };
+            var claims = Enum.GetValues<EAccessTrait>().Select(accessTrait =>
+                new Claim(
+                    accessTrait.ToString(),
+                    user.AccessTraits.HasFlag(accessTrait).ToString())
+            ).ToArray();
+
             var identity = new ClaimsIdentity(claims, nameof(AuthenticationHandler));
-            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), this.Scheme.Name);
+            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
 
             return AuthenticateResult.Success(ticket);
         }

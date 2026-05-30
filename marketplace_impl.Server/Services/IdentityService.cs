@@ -67,7 +67,7 @@ namespace marketplace_impl.Server.Services
         public async Task<ApplicationUserExtended?> GetUser(HttpContext httpContext)
         {
             var authCookie = httpContext.Request.Cookies
-                .Where(c => c.Key == Constants.AuthCookieName).FirstOrDefault().Value;
+                .FirstOrDefault(c => c.Key == Constants.AuthCookieName).Value;
             if (authCookie is null) return null;
 
             Session? session = await _context.Sessions

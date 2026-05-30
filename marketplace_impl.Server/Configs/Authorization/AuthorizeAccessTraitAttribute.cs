@@ -1,7 +1,7 @@
 ﻿using marketplace_impl.Server.Configs.Enums;
 using Microsoft.AspNetCore.Authorization;
 
-namespace marketplace_impl.Server.Configs
+namespace marketplace_impl.Server.Configs.Authorization
 {
     public class AuthorizeAccessTraitAttribute
         : AuthorizeAttribute

@@ -1,4 +1,4 @@
-﻿using marketplace_impl.Server.Configs;
+﻿using marketplace_impl.Server.Configs.Authorization;
 using marketplace_impl.Server.Configs.Enums;
 using marketplace_impl.Server.Data;
 using marketplace_impl.Server.Models;

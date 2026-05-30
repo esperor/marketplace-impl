@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using marketplace_impl.Server.Data;
 using marketplace_impl.Server.Services;
-using marketplace_impl.Server.Configs;
 using marketplace_impl.Server.Configs.Enums;
 using marketplace_impl.Server.Models;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using marketplace_impl.Server.Models.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
+using marketplace_impl.Server.Configs.Authorization;
 
 namespace marketplace_impl.Server.Controllers.Client
 {

@@ -1,5 +1,6 @@
 using marketplace_impl.Server.Configs;
 using marketplace_impl.Server.Configs.Authentication;
+using marketplace_impl.Server.Configs.Authorization;
 using marketplace_impl.Server.Data;
 using marketplace_impl.Server.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -18,9 +19,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<BusinessService>();
-builder.Services.AddTransient<IAuthorizationHandler, AccessTraitAuthorizationHandler>();
 
 #region Authentication
+builder.Services.AddTransient<IAuthorizationHandler, AccessTraitAuthorizationHandler>();
+
 builder.Services.AddAuthentication(o => {
     o.DefaultScheme = Constants.AuthScheme;
 })
