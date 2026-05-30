@@ -6,7 +6,7 @@ namespace course.Server.Data
 {
     public class DbInitializer
     {
-        public static async Task Initialize(ApplicationDbContext context)
+        public static async Task Initialize(ApplicationDbContext context, IPasswordHasher<ApplicationUser> passwordHasher)
         {
             context.Database.EnsureCreated();
 
@@ -20,7 +20,6 @@ namespace course.Server.Data
 
                 var clientLevelId = context.AccessLevels.Where(l => l.Name == EAccessLevel.Client.ToString()).First().Id;
                 var adminLevelId = context.AccessLevels.Where(l => l.Name == EAccessLevel.Administrator.ToString()).First().Id;
-                var hasher = new PasswordHasher<ApplicationUser>();
 
                 var users = new ApplicationUser[]
                 {
@@ -34,8 +33,8 @@ namespace course.Server.Data
                 foreach (ApplicationUser s in users)
                 {
                     if (s.AccessLevelId == clientLevelId)
-                        s.PasswordHash = hasher.HashPassword(s, "1234");
-                    else s.PasswordHash = hasher.HashPassword(s, "admin");
+                        s.PasswordHash = passwordHasher.HashPassword(s, "1234");
+                    else s.PasswordHash = passwordHasher.HashPassword(s, "admin");
                     context.Users.Add(s);
                 }
 

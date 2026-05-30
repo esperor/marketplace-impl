@@ -4,6 +4,7 @@ using course.Server.Data;
 using course.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ builder.Services.AddAuthentication(o => {
     o.DefaultScheme = Constants.AuthScheme;
 })
     .AddScheme<AuthenticationSchemeOptions, AuthenticationHandler>(Constants.AuthScheme, o => { });
+
+builder.Services.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
 #endregion
 
 var config = builder.Configuration;
@@ -56,7 +59,8 @@ if (app.Environment.IsDevelopment())
     {
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await DbInitializer.Initialize(context);
+        var passwordHasher = services.GetRequiredService<IPasswordHasher<ApplicationUser>>();
+        await DbInitializer.Initialize(context, passwordHasher);
     }
 }
 

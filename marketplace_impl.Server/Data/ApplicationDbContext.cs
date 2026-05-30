@@ -38,7 +38,8 @@ namespace course.Server.Data
                .HaveColumnType("date");
         }
 
-        public class DateOnlyConverter() : ValueConverter<DateOnly, DateTime>(d => d.ToDateTime(TimeOnly.MinValue),
-        d => DateOnly.FromDateTime(d));
+        public class DateOnlyConverter() : ValueConverter<DateOnly, DateTime>(
+            d => d.ToDateTime(TimeOnly.MinValue),
+            d => DateOnly.FromDateTime(d));
     }
 }

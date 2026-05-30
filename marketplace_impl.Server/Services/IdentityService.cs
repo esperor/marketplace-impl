@@ -9,10 +9,10 @@ using System.Security.Cryptography;
 
 namespace course.Server.Services
 {
-    public class IdentityService(ApplicationDbContext context)
+    public class IdentityService(ApplicationDbContext context, IPasswordHasher<ApplicationUser> passwordHasher)
     {
         private readonly ApplicationDbContext _context = context;
-        private readonly PasswordHasher<ApplicationUser> _passwordHasher = new PasswordHasher<ApplicationUser>();
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher = passwordHasher;
         private readonly Dictionary<EAccessLevel, int> _accessLevelsToIdMap = CreateAccessLevelsToIdMap(context);
 
         public Dictionary<EAccessLevel, int> AccessLevelsToIdMap { 
@@ -129,10 +129,16 @@ namespace course.Server.Services
                 case PasswordVerificationResult.Failed:
                     return new SignInResult(Errors(["Wrong password"]));
                 case PasswordVerificationResult.SuccessRehashNeeded:
+                    try
+                    {
+                        user.PasswordHash = _passwordHasher.HashPassword(user, password);
+                        _context.SaveChanges();
+                    }
+                    catch (Exception) {}
+
                     return new SignInResult { 
                         Success = true, 
-                        AuthCookie = GenerateAuthCookie(user), 
-                        Errors = ["Rehash needed"] 
+                        AuthCookie = GenerateAuthCookie(user)
                     };
                 default: 
                     return new SignInResult(Errors(["Unexpected error"]));
