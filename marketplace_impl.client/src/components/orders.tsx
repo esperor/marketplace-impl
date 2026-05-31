@@ -125,7 +125,6 @@ function Orders() {
           type="button"
           className="btn"
           onClick={() => {
-            console.log('inv');
             queryClient.invalidateQueries({ queryKey: ['user-orders'] });
           }}
         >

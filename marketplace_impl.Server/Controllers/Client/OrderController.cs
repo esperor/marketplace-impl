@@ -97,6 +97,7 @@ namespace marketplace_impl.Server.Controllers.Client
                     _context.OrderRecords.AddRange(orderRecords);
                 } catch (ArgumentException)
                 {
+                    await _context.Database.RollbackTransactionAsync();
                     return NotFound();
                 }
 

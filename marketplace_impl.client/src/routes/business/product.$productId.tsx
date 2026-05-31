@@ -1,12 +1,15 @@
 import { useQueryClient, useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, useSearch } from '@tanstack/react-router';
+import { createFileRoute, useRouter, useSearch } from '@tanstack/react-router';
 import axios from 'axios';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import api from '#/api/index.ts';
 import { authenticateSeller, replaceRouteParams } from '#/utils/http.ts';
 import ProductAggregatedModel from '#/models/server/productAggregatedModel.ts';
 import InventoryRecordServer from '#/models/server/inventoryRecordServer';
-import PropertiesEditor, { PropertiesEditorRef } from '#/components/routes/business/product.productId/propertiesEditor';
+import PropertiesEditor, {
+  PropertiesEditorRef,
+} from '#/components/routes/business/product.productId/propertiesEditor';
+import Trash from '#/components/assets/trash';
 
 export const Route = createFileRoute('/business/product/$productId')({
   component: EditProduct,
@@ -21,6 +24,7 @@ export const Route = createFileRoute('/business/product/$productId')({
 function EditProduct() {
   const queryClient = useQueryClient();
   const pathParams = Route.useParams();
+  const router = useRouter();
   const productId = pathParams.productId;
   const searchParams = useSearch({ from: '/business/product/$productId' });
   const productQuery = useSuspenseQuery<ProductAggregatedModel>(
@@ -32,31 +36,70 @@ function EditProduct() {
         );
         return data;
       },
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     },
     queryClient,
   );
-  if (productQuery.error)
-    throw productQuery.error;
+  if (productQuery.error) throw productQuery.error;
 
   const [form, setForm] = useState<ProductAggregatedModel>(productQuery.data);
+  useEffect(() => {
+    setForm(productQuery.data);
+  }, [productQuery.data]);
   const productSerialized = useMemo(() => JSON.stringify(productQuery.data), [productQuery.data]);
-  const [succeded, setSucceded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [putSucceded, setPutSucceded] = useState(false);
+  const [putError, setPutError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteInventoryRecordError, setDeleteInventoryRecordError] = useState<string | null>(null);
   const [selectedRecordId, setSelectedRecordId] = useState<number | null>(null);
   const propertiesEditorRef = useRef<PropertiesEditorRef>(null);
   const putProduct = useMutation({
     mutationFn: async (product: ProductAggregatedModel) => {
-      return await axios.put(`/${replaceRouteParams(api.business.product.update, { id: product.id })}`, product);
+      return await axios.put(
+        `/${replaceRouteParams(api.business.product.update, { id: product.id })}`,
+        product,
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['products', searchParams.storeId] });
       queryClient.invalidateQueries({ queryKey: ['product', productId] });
-      setSucceded(true);
+      setPutSucceded(true);
     },
-    onError: (error) => setError(error.message),
+    onError: (error) => setPutError(error.message),
   });
+
+  const deleteProduct = useMutation({
+    mutationFn: async () => {
+      return await axios.delete(
+        `/${replaceRouteParams(api.business.product.delete, { id: productId })}`,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['products', searchParams.storeId] });
+      queryClient.invalidateQueries({ queryKey: ['product', productId] });
+      router.navigate({
+        params: { storeId: searchParams.storeId!.toString() },
+        to: '/business/store/$storeId',
+      });
+    },
+    onError: (error) => setDeleteError(error.message),
+  });
+
+  const deleteInventoryRecord = useMutation({
+    mutationFn: async (inventoryRecordId: string) => {
+      return await axios.delete(
+        `/${replaceRouteParams(api.business.inventory.delete, { id: inventoryRecordId })}`,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      queryClient.invalidateQueries({ queryKey: ['products', searchParams.storeId] });
+      queryClient.invalidateQueries({ queryKey: ['product', productId] });
+    },
+    onError: (error) => setDeleteInventoryRecordError(error.message),
+  })
 
   useEffect(() => {
     propertiesEditorRef?.current?.reset();
@@ -75,6 +118,20 @@ function EditProduct() {
     putProduct.mutate(form);
   };
 
+  const handleDelete = () => {
+    deleteProduct.mutate();
+  };
+
+  const handleDeleteInventoryRecord = (inventoryRecordId: number) => {
+    if (inventoryRecordId === -1) {
+      setForm((prev) => ({
+        ...prev,
+        records: prev.records?.filter(rec => rec.id !== -1)
+      }));
+    } else deleteInventoryRecord.mutate(inventoryRecordId.toString());
+    setSelectedRecordId(null);
+  }
+
   function handleRecordChange<T extends keyof InventoryRecordServer>(
     id: number,
     key: T,
@@ -91,16 +148,19 @@ function EditProduct() {
 
       return { ...prev, records };
     });
-    setSucceded(false);
+    setPutSucceded(false);
   }
 
   const handleAddNewRecord = () => {
     setForm((prev) => ({
       ...prev,
-      records: [...(prev.records ?? []), { id: -1, size: undefined, price: 0, quantity: 0, variation: '', image: undefined }],
+      records: [
+        ...(prev.records ?? []),
+        { id: -1, size: undefined, price: 0, quantity: 0, variation: '', image: undefined },
+      ],
     }));
-    setSucceded(false);
-  }
+    setPutSucceded(false);
+  };
 
   return (
     <div className="page flex-row gap-6">
@@ -113,7 +173,7 @@ function EditProduct() {
             className="font-bold transparent bordered w-fit"
             value={form?.title}
             onChange={(e) => {
-              setSucceded(false);
+              setPutSucceded(false);
               setForm((prev) => ({ ...prev, title: e.target.value }));
             }}
           />
@@ -125,7 +185,7 @@ function EditProduct() {
             className="transparent bordered h-16 align-top"
             value={form?.description}
             onChange={(e) => {
-              setSucceded(false);
+              setPutSucceded(false);
               setForm((prev) => ({ ...prev, description: e.target.value }));
             }}
           />
@@ -141,6 +201,7 @@ function EditProduct() {
                 <th>Вариация</th>
                 <th>Цена</th>
                 <th>Количество</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +231,7 @@ function EditProduct() {
                     </td>
                     <td>
                       <input
-                        className="transparent bordered"
+                        className="transparent bordered w-32"
                         onChange={(e) => handleRecordChange(record.id, 'size', e.target.value)}
                         value={record.size ?? ''}
                       />
@@ -184,14 +245,32 @@ function EditProduct() {
                     </td>
                     <td>
                       <input
-                        className="transparent bordered"
+                        className="transparent bordered w-24"
                         // prettier-ignore
                         onChange={(e) => handleRecordChange(record.id, 'price', Number(e.target.value))}
                         value={record.price}
                         type="number"
                       />
                     </td>
-                    <td>{record.quantity}</td>
+                    <td>
+                      <input
+                        className="transparent bordered w-20"
+                        // prettier-ignore
+                        onChange={(e) => handleRecordChange(record.id, 'quantity', Number(e.target.value))}
+                        value={record.quantity}
+                        type="number"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="active:scale-90 scale-100 p-2"
+                        title="Удалить"
+                        onClick={() => handleDeleteInventoryRecord(record.id)}
+                      >
+                        <Trash className="size-6" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               <tr>
@@ -215,13 +294,25 @@ function EditProduct() {
           <button
             type="button"
             className="btn flex mr-auto"
-            disabled={!formFilled || putProduct.isPending || succeded}
+            disabled={!formFilled || putProduct.isPending || putSucceded}
             onClick={handlePut}
           >
-            {putProduct.isPending ? 'Загрузка...' : succeded ? 'Сохранено' : 'Обновить'}
+            {putProduct.isPending ? 'Загрузка...' : putSucceded ? 'Сохранено' : 'Обновить'}
           </button>
-          {error && <div className="text-red-600">{error}</div>}
+          {putError && <div className="text-red-600">{putError}</div>}
         </div>
+        <div className="flex flex-row gap-4 items-center">
+          <button
+            type="button"
+            className="btn flex mr-auto !bg-red-600 !text-gray-100"
+            disabled={deleteProduct.isPending}
+            onClick={handleDelete}
+          >
+            {deleteProduct.isPending ? 'Загрузка...' : 'Удалить карточку товара'}
+          </button>
+          {deleteError && <div className="text-red-600">{deleteError}</div>}
+        </div>
+        {deleteInventoryRecordError && <div className="text-red-600">{deleteInventoryRecordError}</div>}
       </div>
       <div className="flex flex-col basis-1/2 gap-2">
         <label htmlFor="propertiesJson">Характеристики</label>

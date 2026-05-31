@@ -35,17 +35,24 @@ namespace marketplace_impl.Server.Controllers.Business
             return new InventoryRecordInfoModel(record);
         }
 
-        // DELETE: api/inventory-record/5
+        // DELETE: api/business/inventory-record/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInventoryRecord(int id)
         {
-            throw new NotImplementedException();
-            var inventoryRecord = await _context.InventoryRecords.FindAsync(id);
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest();
 
-            if (inventoryRecord == null)
+            var inventoryRecord = await _context.InventoryRecords
+                .Where(irec => irec.Id == id)
+                .Include(irec => irec.Product.Store)
+                .FirstOrDefaultAsync();
+
+            if (inventoryRecord == null) return NotFound();
+
+            if (inventoryRecord.Product.Store.OwnerId != user.Id)
             {
-                return NotFound();
-            }
+                return Unauthorized("Permission denied");
+            }    
 
             _context.InventoryRecords.Remove(inventoryRecord);
             await _context.SaveChangesAsync();

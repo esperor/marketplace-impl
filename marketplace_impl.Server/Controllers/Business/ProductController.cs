@@ -71,24 +71,23 @@ namespace marketplace_impl.Server.Controllers.Business
 
         // DELETE: api/product/5
         [HttpDelete("{id}")]
+        [AuthorizeAccessTrait(EAccessTrait.Seller)]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            throw new NotImplementedException();
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var user = await _identityService.GetUser(HttpContext);
+            if (user is null) return BadRequest();
+
+            var product = await _context.Products
+                .Where(p => p.Id == id)
+                .Include(p => p.Store)
+                .FirstOrDefaultAsync();
+
+            if (product is null || product.Store.OwnerId != user.Id) return NotFound();
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
         }
     }
 }
