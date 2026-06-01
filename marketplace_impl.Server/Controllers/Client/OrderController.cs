@@ -122,7 +122,7 @@ namespace marketplace_impl.Server.Controllers.Client
             if (user is null) return BadRequest();
 
             var result = await _context.OrderRecords
-                .Where(or => or.Id == model.Id)
+                .Where(or => or.Id == model.Id && or.Status == EOrderRecordStatus.Done)
                 .Include(or => or.Order)
                 .FirstOrDefaultAsync();
             if (result is null) return NotFound();

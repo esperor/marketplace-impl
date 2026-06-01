@@ -9,6 +9,15 @@ import { useMemo } from 'react';
 import OrderRecordInfoModel from '#/models/server/orderRecordInfoModel';
 import { Link } from '@tanstack/react-router';
 
+const g_addressPropertiesMap = {
+  city: 'Город',
+  street: 'Улица',
+  building: 'Дом',
+  entrance: 'Подъезд',
+  floor: 'Этаж',
+  flat: 'Квартира/Офис',
+};
+
 function Orders() {
   const queryClient = useQueryClient();
   const ordersQuery = useSuspenseQuery<OrderInfo[]>(
@@ -117,6 +126,28 @@ function Orders() {
     return { className, style };
   };
 
+  const getAddressJsx = (order: OrderInfo) => {
+    try {
+      const parsedAddress = JSON.parse(order.address);
+      return (
+        <div className='rounded-md bg-gray-900 px-2 py-1 w-fit'>
+          <h4 className='font-semibold'>Адрес</h4>
+          <div className="px-6">
+          {Object.keys(parsedAddress).map((key, i) => (
+            <p key={i}>
+              {g_addressPropertiesMap[key as keyof typeof g_addressPropertiesMap]}:{' '}
+              {parsedAddress[key]}
+            </p>
+          ))}
+          </div>
+        </div>
+      );
+    } catch (e) {
+      console.error(e);
+      return order.address;
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row justify-between">
@@ -154,7 +185,7 @@ function Orders() {
               <div className="flex flex-row gap-6 ">
                 <div className="flex flex-col flex-1" key={order.id}>
                   <h3>{`#${order.id}`}</h3>
-                  <p>{order.address}</p>
+                  <p>{getAddressJsx(order)}</p>
                   <p>{new Date(order.date).toLocaleDateString('ru')}</p>
                   <p>{`Стоимость: ${order.totalPrice} руб.`}</p>
                 </div>
