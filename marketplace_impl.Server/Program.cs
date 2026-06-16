@@ -48,6 +48,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+if (builder.Configuration.GetValue<bool>("RUNNING_IN_DOCKER"))
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
