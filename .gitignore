@@ -361,6 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-marketplace_impl.client/src/routeTree.gen.ts
 marketplace_impl.Server/appsettings.*.json
 *.local.*
