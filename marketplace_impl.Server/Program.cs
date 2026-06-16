@@ -60,6 +60,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapFallbackToFile("index.html");
+
 if (app.Environment.IsDevelopment() && app.Configuration.GetValue<bool>("ShouldInitializeDb") == true)
 {
     using (var scope = app.Services.CreateScope())
