@@ -26,6 +26,7 @@ WORKDIR /app
 COPY --from=dotnet-build /app/publish .
 COPY --from=frontend-build /src/marketplace_impl.client/dist ./wwwroot
 
-EXPOSE 8080
+EXPOSE 80
+ENV ASPNETCORE_URLS=http://+:80
 ENV RUNNING_IN_DOCKER=true
 ENTRYPOINT ["dotnet", "marketplace_impl.Server.dll"]
